@@ -132,12 +132,12 @@
       <div class="control-block">
         <label for="satCount">Saturday headcount</label>
         <input type="number" id="satCount" min="4" max="10" value="7" />
-        <small style="font-size:.6rem;">Core on Sat = 4 (Bridgette, Stefanie, Missie, Dana)</small>
+        <small style="font-size:.6rem;"></small>
       </div>
       <div class="control-block">
         <label for="sunCount">Sunday headcount</label>
         <input type="number" id="sunCount" min="3" max="10" value="6" />
-        <small style="font-size:.6rem;">Core on Sun = 3 (B, S, Mahala) or 4 on Missie-Sundays</small>
+        <small style="font-size:.6rem;"></small>
       </div>
       <div class="control-block">
         <label for="employeeFilter">Filter by employee</label>
@@ -150,15 +150,13 @@
 
   <main>
     <p class="legend">
-      Constraints: Bridgette &amp; Stefanie every weekend; Dana every Saturday; Mahala every Sunday; Missie every Saturday + Dec 14, Jan 4, Jan 25, Feb 15; Nate &amp; Kelsey always together;
-      John favored over Holli; Holli never works both Sat and Sun in the same weekend.
       Change headcounts to trim/expand non-core staff.
     </p>
     <div id="weekContainer" class="week-grid"></div>
   </main>
 
   <script>
-    // Updated schedule with John favored and Holli not on both days
+    // 
     const weekends = [
       // Week 1
       {
