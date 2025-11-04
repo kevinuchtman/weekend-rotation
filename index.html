@@ -54,6 +54,18 @@
       max-width: 5rem;
       padding: .2rem .4rem;
     }
+    #printBtn {
+      padding: 0.5rem 0.8rem;
+      border-radius: .5rem;
+      border: 1px solid var(--border);
+      background: #0369a1;
+      color: white;
+      font-size: .8rem;
+      cursor: pointer;
+    }
+    #printBtn:hover {
+      background: #075985;
+    }
     main {
       padding: 1.5rem;
       max-width: 1200px;
@@ -123,6 +135,19 @@
       font-size: .65rem;
       margin-top: .35rem;
     }
+
+    @media print {
+      header, .legend {
+        display: none !important;
+      }
+      body {
+        background: white;
+      }
+      @page {
+        size: landscape;
+        margin: 0.5in;
+      }
+    }
   </style>
 </head>
 <body>
@@ -145,6 +170,7 @@
           <option value="__all">Show everyone</option>
         </select>
       </div>
+      <button id="printBtn">🖨️ Print / Export PDF</button>
     </div>
   </header>
 
@@ -155,46 +181,45 @@
   </main>
 
   <script>
-   
     const weekends = [
       {
         label: "Week 1",
         saturday: { date: "Sat, Dec 6, 2025", names: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey","Becca"] },
-        sunday:   { date: "Sun, Dec 7, 2025", names: ["Bridgette","Stefanie","Mahala","Becca","Abby","John"] }
+        sunday:   { date: "Sun, Dec 7, 2025", names: ["Bridgette","Stefanie","Mahala","Holli","Abby","John"] }
       },
       {
         label: "Week 2",
-        saturday: { date: "Sat, Dec 13, 2025", names: ["Bridgette","Stefanie","Missie","Dana","Becca","Abby","John"] },
+        saturday: { date: "Sat, Dec 13, 2025", names: ["Bridgette","Stefanie","Missie","Dana","Becca","Holli","John"] },
         sunday:   { date: "Sun, Dec 14, 2025", names: ["Bridgette","Stefanie","Mahala","Missie","Paige","Julia"] }
       },
       {
         label: "Week 3",
         saturday: { date: "Sat, Dec 20, 2025", names: ["Bridgette","Stefanie","Missie","Dana","Paige","Kathy","John"] },
-        sunday:   { date: "Sun, Dec 21, 2025", names: ["Bridgette","Stefanie","Mahala","Kathy","Hannah","Julia"] }
+        sunday:   { date: "Sun, Dec 21, 2025", names: ["Bridgette","Stefanie","Mahala","Kathy","Hannah","Holli"] }
       },
       {
         label: "Week 4",
         saturday: { date: "Sat, Dec 27, 2025", names: ["Bridgette","Stefanie","Missie","Dana","Kathy","Hannah","Maddie"] },
-        sunday:   { date: "Sun, Dec 28, 2025", names: ["Bridgette","Stefanie","Mahala","Julia","Rebakah","Maddie"] }
+        sunday:   { date: "Sun, Dec 28, 2025", names: ["Bridgette","Stefanie","Mahala","Julia","Rebakah","Holli"] }
       },
       {
         label: "Week 5",
-        saturday: { date: "Sat, Jan 3, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Maddie","Kay","Julia"] },
+        saturday: { date: "Sat, Jan 3, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Maddie","Kay","Holli"] },
         sunday:   { date: "Sun, Jan 4, 2026", names: ["Bridgette","Stefanie","Mahala","Missie","Nate","Kelsey"] }
       },
       {
         label: "Week 6",
         saturday: { date: "Sat, Jan 10, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Julia","Rebakah","John"] },
-        sunday:   { date: "Sun, Jan 11, 2026", names: ["Bridgette","Stefanie","Mahala","Kay","Becca","Abby"] }
+        sunday:   { date: "Sun, Jan 11, 2026", names: ["Bridgette","Stefanie","Mahala","Kay","Becca","Holli"] }
       },
       {
         label: "Week 7",
-        saturday: { date: "Sat, Jan 17, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey","Paige"] },
+        saturday: { date: "Sat, Jan 17, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey","Holli"] },
         sunday:   { date: "Sun, Jan 18, 2026", names: ["Bridgette","Stefanie","Mahala","John","Kathy","Hannah"] }
       },
       {
         label: "Week 8",
-        saturday: { date: "Sat, Jan 24, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Becca","Abby","Hannah"] },
+        saturday: { date: "Sat, Jan 24, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Becca","Abby","Holli"] },
         sunday:   { date: "Sun, Jan 25, 2026", names: ["Bridgette","Stefanie","Mahala","Missie","Julia","Rebakah"] }
       },
       {
@@ -204,7 +229,7 @@
       },
       {
         label: "Week 10",
-        saturday: { date: "Sat, Feb 7, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Kathy","Hannah","Julia"] },
+        saturday: { date: "Sat, Feb 7, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Kathy","Hannah","Holli"] },
         sunday:   { date: "Sun, Feb 8, 2026", names: ["Bridgette","Stefanie","Mahala","Nate","Kelsey","Becca"] }
       },
       {
@@ -219,48 +244,23 @@
       }
     ];
 
-    
-    const fairnessPriority = [
-      "Holli",
-      "John",
-      "Becca",
-      "Abby",
-      "Hannah",
-      "Paige",
-      "Kathy",
-      "Maddie",
-      "Kay",
-      "Julia",
-      "Rebakah"
-    ];
-
     const colorMap = {
-      "Bridgette": "black",
-      "Stefanie": "dimgray",
-      "Missie": "purple",
-      "Dana": "brown",
-      "Mahala": "teal",
-      "Nate": "darkorange",
-      "Kelsey": "darkorange",
-      "Becca": "darkgreen",
-      "Abby": "forestgreen",
-      "Holli": "royalblue",
-      "Paige": "slateblue",
-      "Kathy": "darkred",
-      "Hannah": "olive",
-      "Maddie": "darkcyan",
-      "Kay": "chocolate",
-      "Julia": "mediumvioletred",
-      "Rebakah": "red",
-      "John": "navy"
+      "Bridgette": "black","Stefanie": "dimgray","Missie": "purple","Dana": "brown","Mahala": "teal",
+      "Nate": "darkorange","Kelsey": "darkorange","Becca": "darkgreen","Abby": "forestgreen","Holli": "royalblue",
+      "Paige": "slateblue","Kathy": "darkred","Hannah": "olive","Maddie": "darkcyan","Kay": "chocolate",
+      "Julia": "mediumvioletred","Rebakah": "red","John": "navy"
     };
+
+    const fairnessPriority = [
+      "John","Holli","Becca","Abby","Hannah","Paige","Kathy","Maddie","Kay","Julia","Rebakah"
+    ];
 
     const weekContainer = document.getElementById("weekContainer");
     const satCountInput = document.getElementById("satCount");
     const sunCountInput = document.getElementById("sunCount");
     const employeeFilter = document.getElementById("employeeFilter");
+    const printBtn = document.getElementById("printBtn");
 
-    // build employee list
     const allNames = new Set();
     weekends.forEach(w => {
       w.saturday.names.forEach(n => allNames.add(n));
@@ -273,144 +273,72 @@
       employeeFilter.appendChild(opt);
     });
 
-    function isMissieSunday(names) {
-      return names.includes("Missie");
-    }
+    function isMissieSunday(names){return names.includes("Missie");}
 
-    // fairness-aware trimming
-    function getDisplayNames(dayNames, isSunday, requestedCount) {
-      let core = [];
-      if (!isSunday) {
-        core = ["Bridgette","Stefanie","Missie","Dana"];
-      } else {
-        core = ["Bridgette","Stefanie","Mahala"];
-        if (dayNames.includes("Missie")) {
-          core.push("Missie");
-        }
-      }
-
-      // start with core, in the order they appear in that day
-      const output = [];
-      dayNames.forEach(n => {
-        if (core.includes(n) && !output.includes(n)) {
-          output.push(n);
-        }
+    function getDisplayNames(dayNames,isSunday,requestedCount){
+      let core=[];
+      if(!isSunday){core=["Bridgette","Stefanie","Missie","Dana"];}
+      else{core=["Bridgette","Stefanie","Mahala"];if(dayNames.includes("Missie"))core.push("Missie");}
+      const output=[];
+      dayNames.forEach(n=>{if(core.includes(n)&&!output.includes(n))output.push(n);});
+      const remaining=dayNames.filter(n=>!core.includes(n));
+      remaining.sort((a,b)=>{
+        const ia=fairnessPriority.indexOf(a),ib=fairnessPriority.indexOf(b);
+        return (ia===-1?999:ia)-(ib===-1?999:ib);
       });
-
-      // remaining = non-core that are actually scheduled that day
-      const remaining = dayNames.filter(n => !core.includes(n));
-
-      // sort remaining by fairness list
-      remaining.sort((a, b) => {
-        const ia = fairnessPriority.indexOf(a);
-        const ib = fairnessPriority.indexOf(b);
-        const va = ia === -1 ? 999 : ia;
-        const vb = ib === -1 ? 999 : ib;
-        return va - vb;
-      });
-
-      // add remaining until we reach requestedCount
-      for (const name of remaining) {
-        if (output.length >= requestedCount) break;
-        output.push(name);
-      }
-
+      for(const n of remaining){if(output.length>=requestedCount)break;output.push(n);}
       return output;
     }
 
-    function render() {
-      const satCount = parseInt(satCountInput.value, 10);
-      const sunCount = parseInt(sunCountInput.value, 10);
-      const filterName = employeeFilter.value;
-
-      weekContainer.innerHTML = "";
-
-      weekends.forEach(w => {
-        const card = document.createElement("div");
-        card.className = "week-card";
-
-        const title = document.createElement("div");
-        title.className = "week-title";
-        title.textContent = w.label;
-        card.appendChild(title);
-
-        // SATURDAY
-        const satDisplay = getDisplayNames(w.saturday.names, false, satCount);
-        const satBlock = document.createElement("div");
-        satBlock.className = "day-block";
-        satBlock.innerHTML = `
-          <div class="day-head">
-            <span class="day-name">Saturday</span>
-            <span class="day-date">${w.saturday.date}</span>
-          </div>
-        `;
-        const satNamesWrap = document.createElement("div");
-        satNamesWrap.className = "names";
-        satDisplay.forEach(n => {
-          if (filterName === "__all" || n === filterName) {
-            const pill = document.createElement("span");
-            pill.className = "name-pill";
-            pill.textContent = n;
-            pill.style.color = colorMap[n] || "black";
-            satNamesWrap.appendChild(pill);
+    function render(){
+      const satCount=parseInt(satCountInput.value,10),sunCount=parseInt(sunCountInput.value,10);
+      const filter=employeeFilter.value;
+      weekContainer.innerHTML="";
+      weekends.forEach(w=>{
+        const card=document.createElement("div");
+        card.className="week-card";
+        card.innerHTML=`<div class="week-title">${w.label}</div>`;
+        const satDisplay=getDisplayNames(w.saturday.names,false,satCount);
+        const sat=document.createElement("div");
+        sat.className="day-block";
+        sat.innerHTML=`<div class="day-head"><span class="day-name">Saturday</span><span class="day-date">${w.saturday.date}</span></div>`;
+        const sn=document.createElement("div");sn.className="names";
+        satDisplay.forEach(n=>{
+          if(filter==="__all"||n===filter){
+            const p=document.createElement("span");
+            p.className="name-pill";p.textContent=n;p.style.color=colorMap[n]||"black";
+            sn.appendChild(p);
           }
         });
-        satBlock.appendChild(satNamesWrap);
-        if (satCount < 4) {
-          const warn = document.createElement("div");
-          warn.className = "warn";
-          warn.textContent = "Cannot go below Saturday core (4).";
-          satBlock.appendChild(warn);
-        }
-        if (filterName === "__all" || satDisplay.includes(filterName)) {
-          card.appendChild(satBlock);
-        }
+        sat.appendChild(sn);
+        if(satCount<4){const wDiv=document.createElement("div");wDiv.className="warn";wDiv.textContent="Cannot go below Saturday core (4).";sat.appendChild(wDiv);}
+        if(filter==="__all"||satDisplay.includes(filter))card.appendChild(sat);
 
-        // SUNDAY
-        const sunDisplay = getDisplayNames(w.sunday.names, true, sunCount);
-        const sunBlock = document.createElement("div");
-        sunBlock.className = "day-block";
-        sunBlock.innerHTML = `
-          <div class="day-head">
-            <span class="day-name">Sunday</span>
-            <span class="day-date">${w.sunday.date}</span>
-          </div>
-        `;
-        const sunNamesWrap = document.createElement("div");
-        sunNamesWrap.className = "names";
-        sunDisplay.forEach(n => {
-          if (filterName === "__all" || n === filterName) {
-            const pill = document.createElement("span");
-            pill.className = "name-pill";
-            pill.textContent = n;
-            pill.style.color = colorMap[n] || "black";
-            sunNamesWrap.appendChild(pill);
+        const sunDisplay=getDisplayNames(w.sunday.names,true,sunCount);
+        const sun=document.createElement("div");
+        sun.className="day-block";
+        sun.innerHTML=`<div class="day-head"><span class="day-name">Sunday</span><span class="day-date">${w.sunday.date}</span></div>`;
+        const su=document.createElement("div");su.className="names";
+        sunDisplay.forEach(n=>{
+          if(filter==="__all"||n===filter){
+            const p=document.createElement("span");
+            p.className="name-pill";p.textContent=n;p.style.color=colorMap[n]||"black";
+            su.appendChild(p);
           }
         });
-        sunBlock.appendChild(sunNamesWrap);
+        sun.appendChild(su);
+        const coreMin=isMissieSunday(w.sunday.names)?4:3;
+        if(sunCount<coreMin){const wDiv=document.createElement("div");wDiv.className="warn";wDiv.textContent=`Cannot go below Sunday core (${coreMin}).`;sun.appendChild(wDiv);}
+        if(filter==="__all"||sunDisplay.includes(filter))card.appendChild(sun);
 
-        const baseIsMissieSun = isMissieSunday(w.sunday.names);
-        const sunCoreMin = baseIsMissieSun ? 4 : 3;
-        if (sunCount < sunCoreMin) {
-          const warn = document.createElement("div");
-          warn.className = "warn";
-          warn.textContent = `Cannot go below Sunday core (${sunCoreMin}).`;
-          sunBlock.appendChild(warn);
-        }
-        if (filterName === "__all" || sunDisplay.includes(filterName)) {
-          card.appendChild(sunBlock);
-        }
-
-        if (card.querySelectorAll(".day-block").length > 0) {
-          weekContainer.appendChild(card);
-        }
+        if(card.querySelectorAll(".day-block").length>0)weekContainer.appendChild(card);
       });
     }
 
-    satCountInput.addEventListener("input", render);
-    sunCountInput.addEventListener("input", render);
-    employeeFilter.addEventListener("change", render);
-
+    satCountInput.addEventListener("input",render);
+    sunCountInput.addEventListener("input",render);
+    employeeFilter.addEventListener("change",render);
+    printBtn.addEventListener("click",()=>window.print());
     render();
   </script>
 </body>
