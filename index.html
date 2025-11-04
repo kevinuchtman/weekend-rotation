@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dynamic Weekend Rotation (Dec 2025 – Feb 2026)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --border: #d9dee5;
+      --text: #101828;
+      --warn: #b91c1c;
+    }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      margin: 0;
+      color: var(--text);
+    }
+    header {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem 0.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    h1 {
+      font-size: 1.1rem;
+      margin: 0 0 .5rem 0;
+    }
+    .controls-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: .7rem;
+    }
+    .control-block {
+      background: #f8fafc;
+      border: 1px solid #edf0f4;
+      border-radius: .5rem;
+      padding: .4rem .6rem .3rem;
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+    }
+    .control-block label {
+      font-size: .7rem;
+      color: #475569;
+    }
+    .control-block input {
+      max-width: 5rem;
+      padding: .2rem .4rem;
+    }
+    main {
+      padding: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .week-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .week-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 0.75rem 0.9rem 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.03);
+    }
+    .week-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .day-block {
+      background: #f8fafc;
+      border: 1px solid #edf0f4;
+      border-radius: 0.5rem;
+      padding: 0.5rem 0.6rem;
+    }
+    .day-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .day-name {
+      font-weight: 600;
+      font-size: 0.78rem;
+    }
+    .day-date {
+      font-size: 0.7rem;
+      color: #475569;
+    }
+    .names {
+      margin-top: 0.45rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .name-pill {
+      background: #fff;
+      border: 1px solid rgba(15,23,42,0.05);
+      border-radius: 9999px;
+      padding: 0.15rem 0.45rem;
+      font-size: 0.68rem;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .legend {
+      font-size: .7rem;
+      color: #475569;
+      margin-bottom: 1rem;
+    }
+    .warn {
+      color: var(--warn);
+      font-size: .65rem;
+      margin-top: .35rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dynamic Weekend Rotation (Dec 6, 2025 – Feb 22, 2026)</h1>
+    <div class="controls-row">
+      <div class="control-block">
+        <label for="satCount">Saturday headcount</label>
+        <input type="number" id="satCount" min="4" max="10" value="7" />
+        <small style="font-size:.6rem;">Core on Sat = 4 (Bridgette, Stefanie, Missie, Dana)</small>
+      </div>
+      <div class="control-block">
+        <label for="sunCount">Sunday headcount</label>
+        <input type="number" id="sunCount" min="3" max="10" value="6" />
+        <small style="font-size:.6rem;">Core on Sun = 3 (B, S, Mahala) or 4 on Missie-Sundays</small>
+      </div>
+      <div class="control-block">
+        <label for="employeeFilter">Filter by employee</label>
+        <select id="employeeFilter">
+          <option value="__all">Show everyone</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <p class="legend">
+      Constraints: Bridgette &amp; Stefanie every weekend; Dana every Saturday; Mahala every Sunday; Missie every Saturday + every 3rd Sunday (Dec 14, Jan 4, Jan 25, Feb 15); Nate &amp; Kelsey always together.
+      Change the headcount above to see how the roster trims/expands in real time.
+    </p>
+    <div id="weekContainer" class="week-grid"></div>
+  </main>
+
+  <script>
+    // Base 12-week schedule with MAX staffing (7 Sat, 6 Sun)
+    // This is our "full" schedule. We'll trim/expand from this.
+    const weekends = [
+      {
+        label: "Week 1",
+        saturday: { date: "Sat, Dec 6, 2025", names: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey","Becca"] },
+        sunday:   { date: "Sun, Dec 7, 2025", names: ["Bridgette","Stefanie","Mahala","Becca","Abby","John"] }
+      },
+      {
+        label: "Week 2", // Missie Sunday
+        saturday: { date: "Sat, Dec 13, 2025", names: ["Bridgette","Stefanie","Missie","Dana","Becca","Abby","Holli"] },
+        sunday:   { date: "Sun, Dec 14, 2025", names: ["Bridgette","Stefanie","Mahala","Missie","Holli","Paige"] }
+      },
+      {
+        label: "Week 3",
+        saturday: { date: "Sat, Dec 20, 2025", names: ["Bridgette","Stefanie","Missie","Dana","Holli","Paige","Kathy"] },
+        sunday:   { date: "Sun, Dec 21, 2025", names: ["Bridgette","Stefanie","Mahala","Kathy","Hannah","Julia"] }
+      },
+      {
+        label: "Week 4",
+        saturday: { date: "Sat, Dec 27, 2025", names: ["Bridgette","Stefanie","Missie","Dana","Kathy","Hannah","Maddie"] },
+        sunday:   { date: "Sun, Dec 28, 2025", names: ["Bridgette","Stefanie","Mahala","Julia","Rebakah","Maddie"] }
+      },
+      {
+        label: "Week 5", // Missie Sunday
+        saturday: { date: "Sat, Jan 3, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Maddie","Kay","Julia"] },
+        sunday:   { date: "Sun, Jan 4, 2026", names: ["Bridgette","Stefanie","Mahala","Missie","Nate","Kelsey"] }
+      },
+      {
+        label: "Week 6",
+        saturday: { date: "Sat, Jan 10, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Julia","Rebakah","John"] },
+        sunday:   { date: "Sun, Jan 11, 2026", names: ["Bridgette","Stefanie","Mahala","Kay","Becca","Abby"] }
+      },
+      {
+        label: "Week 7",
+        saturday: { date: "Sat, Jan 17, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey","Paige"] },
+        sunday:   { date: "Sun, Jan 18, 2026", names: ["Bridgette","Stefanie","Mahala","Holli","Paige","Kathy"] }
+      },
+      {
+        label: "Week 8", // Missie Sunday
+        saturday: { date: "Sat, Jan 24, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Becca","Abby","Hannah"] },
+        sunday:   { date: "Sun, Jan 25, 2026", names: ["Bridgette","Stefanie","Mahala","Missie","Julia","Rebakah"] }
+      },
+      {
+        label: "Week 9",
+        saturday: { date: "Sat, Jan 31, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Holli","Paige","Kay"] },
+        sunday:   { date: "Sun, Feb 1, 2026", names: ["Bridgette","Stefanie","Mahala","Maddie","Kay","John"] }
+      },
+      {
+        label: "Week 10",
+        saturday: { date: "Sat, Feb 7, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Kathy","Hannah","Julia"] },
+        sunday:   { date: "Sun, Feb 8, 2026", names: ["Bridgette","Stefanie","Mahala","Nate","Kelsey","Becca"] }
+      },
+      {
+        label: "Week 11", // Missie Sunday
+        saturday: { date: "Sat, Feb 14, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Maddie","Kay","Rebakah"] },
+        sunday:   { date: "Sun, Feb 15, 2026", names: ["Bridgette","Stefanie","Mahala","Missie","John","Hannah"] }
+      },
+      {
+        label: "Week 12",
+        saturday: { date: "Sat, Feb 21, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Julia","Rebakah","Abby"] },
+        sunday:   { date: "Sun, Feb 22, 2026", names: ["Bridgette","Stefanie","Mahala","Holli","Paige","Maddie"] }
+      }
+    ];
+
+    const colorMap = {
+      "Bridgette": "black",
+      "Stefanie": "dimgray",
+      "Missie": "purple",
+      "Dana": "brown",
+      "Mahala": "teal",
+      "Nate": "darkorange",
+      "Kelsey": "darkorange",
+      "Becca": "darkgreen",
+      "Abby": "forestgreen",
+      "Holli": "royalblue",
+      "Paige": "slateblue",
+      "Kathy": "darkred",
+      "Hannah": "olive",
+      "Maddie": "darkcyan",
+      "Kay": "chocolate",
+      "Julia": "mediumvioletred",
+      "Rebakah": "red",
+      "John": "navy"
+    };
+
+    const weekContainer = document.getElementById("weekContainer");
+    const satCountInput = document.getElementById("satCount");
+    const sunCountInput = document.getElementById("sunCount");
+    const employeeFilter = document.getElementById("employeeFilter");
+
+    // build employee list
+    const allNames = new Set();
+    weekends.forEach(w => {
+      w.saturday.names.forEach(n => allNames.add(n));
+      w.sunday.names.forEach(n => allNames.add(n));
+    });
+    Array.from(allNames).sort().forEach(n => {
+      const opt = document.createElement("option");
+      opt.value = n;
+      opt.textContent = n;
+      employeeFilter.appendChild(opt);
+    });
+
+    // helper: is this a Missie Sunday?
+    function isMissieSunday(names) {
+      return names.includes("Missie");
+    }
+
+    // enforce core + trim
+    function getDisplayNames(dayNames, isSunday, requestedCount) {
+      // core sets
+      let core = [];
+      if (!isSunday) {
+        // Saturday core: B, S, Missie, Dana
+        core = ["Bridgette","Stefanie","Missie","Dana"];
+      } else {
+        // Sunday core:
+        // always B, S, Mahala
+        core = ["Bridgette","Stefanie","Mahala"];
+        // if this Sunday has Missie in base, add her to core
+        if (dayNames.includes("Missie")) {
+          core.push("Missie");
+        }
+      }
+
+      // always keep core in the order they appear in the base dayNames
+      const output = [];
+      dayNames.forEach(n => {
+        if (core.includes(n) && !output.includes(n)) {
+          output.push(n);
+        }
+      });
+
+      // if requestedCount < core, we return core and caller can show warning
+      if (requestedCount <= output.length) {
+        return output.slice(0, requestedCount);
+      }
+
+      // now fill the rest in original order, skipping ones already included
+      for (const n of dayNames) {
+        if (!output.includes(n)) {
+          output.push(n);
+        }
+        if (output.length >= requestedCount) break;
+      }
+
+      return output;
+    }
+
+    function render() {
+      const satCount = parseInt(satCountInput.value, 10);
+      const sunCount = parseInt(sunCountInput.value, 10);
+      const filterName = employeeFilter.value;
+
+      weekContainer.innerHTML = "";
+
+      weekends.forEach(w => {
+        const card = document.createElement("div");
+        card.className = "week-card";
+
+        const title = document.createElement("div");
+        title.className = "week-title";
+        title.textContent = w.label;
+        card.appendChild(title);
+
+        // SATURDAY
+        const satDisplay = getDisplayNames(w.saturday.names, false, satCount);
+        const satBlock = document.createElement("div");
+        satBlock.className = "day-block";
+        satBlock.innerHTML = `
+          <div class="day-head">
+            <span class="day-name">Saturday</span>
+            <span class="day-date">${w.saturday.date}</span>
+          </div>
+        `;
+        const satNamesWrap = document.createElement("div");
+        satNamesWrap.className = "names";
+        satDisplay.forEach(n => {
+          if (filterName === "__all" || n === filterName) {
+            const pill = document.createElement("span");
+            pill.className = "name-pill";
+            pill.textContent = n;
+            pill.style.color = colorMap[n] || "black";
+            satNamesWrap.appendChild(pill);
+          }
+        });
+        satBlock.appendChild(satNamesWrap);
+
+        // warn if user asked for too few
+        if (satCount < 4) {
+          const warn = document.createElement("div");
+          warn.className = "warn";
+          warn.textContent = "Cannot go below Saturday core (4).";
+          satBlock.appendChild(warn);
+        }
+        // hide if filtering and this person not present
+        if (filterName === "__all" || satDisplay.includes(filterName)) {
+          card.appendChild(satBlock);
+        }
+
+        // SUNDAY
+        const sunDisplay = getDisplayNames(w.sunday.names, true, sunCount);
+        const sunBlock = document.createElement("div");
+        sunBlock.className = "day-block";
+        sunBlock.innerHTML = `
+          <div class="day-head">
+            <span class="day-name">Sunday</span>
+            <span class="day-date">${w.sunday.date}</span>
+          </div>
+        `;
+        const sunNamesWrap = document.createElement("div");
+        sunNamesWrap.className = "names";
+        sunDisplay.forEach(n => {
+          if (filterName === "__all" || n === filterName) {
+            const pill = document.createElement("span");
+            pill.className = "name-pill";
+            pill.textContent = n;
+            pill.style.color = colorMap[n] || "black";
+            sunNamesWrap.appendChild(pill);
+          }
+        });
+        sunBlock.appendChild(sunNamesWrap);
+
+        // Sunday min check:
+        const baseIsMissieSun = isMissieSunday(w.sunday.names);
+        const sunCoreMin = baseIsMissieSun ? 4 : 3;
+        if (sunCount < sunCoreMin) {
+          const warn = document.createElement("div");
+          warn.className = "warn";
+          warn.textContent = `Cannot go below Sunday core (${sunCoreMin}).`;
+          sunBlock.appendChild(warn);
+        }
+        if (filterName === "__all" || sunDisplay.includes(filterName)) {
+          card.appendChild(sunBlock);
+        }
+
+        // if filtering and this weekend shows neither day, skip
+        if (card.querySelectorAll(".day-block").length > 0) {
+          weekContainer.appendChild(card);
+        }
+      });
+    }
+
+    satCountInput.addEventListener("input", render);
+    sunCountInput.addEventListener("input", render);
+    employeeFilter.addEventListener("change", render);
+
+    render();
+  </script>
+</body>
+</html>
