@@ -221,8 +221,9 @@
     <h1>Weekend Rotation Schedule</h1>
     <div class="controls-row">
       <div class="control-block">
-        <label for="startDate">Start Saturday</label>
-        <input type="date" id="startDate" value="2025-12-06" />
+        <label for="startDate">Start Sunday</label>
+        <!-- Sunday of the Dec 6–7 weekend -->
+        <input type="date" id="startDate" value="2025-12-07" />
       </div>
       <div class="control-block">
         <label for="satCount">Saturday headcount</label>
@@ -299,6 +300,8 @@
     const printBtn = document.getElementById("printBtn");
     const startDateInput = document.getElementById("startDate");
     const viewButtons = document.querySelectorAll(".view-btn");
+
+    let lastValidStart = startDateInput.value;
 
     const allNames = new Set();
     baseWeeks.forEach(w => { w.saturdayNames.forEach(n => allNames.add(n)); w.sundayNames.forEach(n => allNames.add(n)); });
@@ -390,8 +393,8 @@
       calendarView.innerHTML = "";
 
       baseWeeks.forEach((weekPattern, idx) => {
-        const satDate = addDays(start, idx * 7);
-        const sunDate = addDays(satDate, 1);
+        const sunDate = addDays(start, idx * 7);
+        const satDate = addDays(sunDate, 6);
 
         const satDisplay = pickSaturday(weekPattern.saturdayNames, satCount, satCounts);
         const sunDisplay = pickSunday(weekPattern.sundayNames, sunCount, sunCounts);
@@ -495,8 +498,19 @@
     satCountInput.addEventListener("input", render);
     sunCountInput.addEventListener("input", render);
     employeeFilter.addEventListener("change", render);
-    startDateInput.addEventListener("change", render);
     printBtn.addEventListener("click", () => window.print());
+
+    startDateInput.addEventListener("change", () => {
+      const picked = parseDateInput(startDateInput.value);
+      if (picked.getDay() !== 0) {
+        alert("Error: please choose any Sunday as your start day.");
+        startDateInput.value = lastValidStart;
+        return;
+      }
+      lastValidStart = startDateInput.value;
+      render();
+    });
+
     viewButtons.forEach(btn => {
       btn.addEventListener("click", () => {
         viewButtons.forEach(b => b.classList.remove("active"));
