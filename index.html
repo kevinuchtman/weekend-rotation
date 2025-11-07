@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Dynamic Weekend Rotation</title>
+  <title>Weekend Rotation Schedule</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
@@ -126,18 +126,13 @@
       line-height: 1.2;
       white-space: nowrap;
     }
-    .legend {
-      font-size: .7rem;
-      color: #475569;
-      margin-bottom: 1rem;
-    }
     .warn {
       color: var(--warn);
       font-size: .65rem;
       margin-top: .35rem;
     }
     @media print {
-      header, .legend {
+      header {
         display: none !important;
       }
       body {
@@ -152,22 +147,19 @@
 </head>
 <body>
   <header>
-    <h1>Dynamic Weekend Rotation</h1>
+    <h1>Weekend Rotation Schedule</h1>
     <div class="controls-row">
       <div class="control-block">
         <label for="startDate">Start Saturday</label>
         <input type="date" id="startDate" value="2025-12-06" />
-        <small style="font-size:.6rem;">Week 1 Saturday</small>
       </div>
       <div class="control-block">
         <label for="satCount">Saturday headcount</label>
         <input type="number" id="satCount" min="4" max="10" value="6" />
-        <small style="font-size:.6rem;">Core Sat = 4</small>
       </div>
       <div class="control-block">
         <label for="sunCount">Sunday headcount</label>
         <input type="number" id="sunCount" min="3" max="10" value="5" />
-        <small style="font-size:.6rem;"></small>
       </div>
       <div class="control-block">
         <label for="employeeFilter">Filter by employee</label>
@@ -180,106 +172,33 @@
   </header>
 
   <main>
-    <p class="legend">
-
-
-
-
-    </p>
     <div id="weekContainer" class="week-grid"></div>
   </main>
 
   <script>
-    // 12-week repeating PATTERN of names (no dates)
-
     const baseWeeks = [
-      {
-        saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey","Becca"],
-        sundayNames:   ["Bridgette","Stefanie","Mahala","Holli","Abby","John"]
-      },
-      {
-        saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Becca","Abby","John"],
-        sundayNames:   ["Bridgette","Stefanie","Mahala","Missie","Paige","Julia"]
-      },
-      {
-        saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Holli","Paige","Kathy"],
-        sundayNames:   ["Bridgette","Stefanie","Mahala","Kathy","Hannah","Julia"]
-      },
-      {
-        saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey","Hannah"],
-        sundayNames:   ["Bridgette","Stefanie","Mahala","Julia","Rebakah","Maddie"]
-      },
-      {
-        saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Maddie","Kay","Julia"],
-        sundayNames:   ["Bridgette","Stefanie","Mahala","Missie","Nate","Kelsey"]
-      },
-      {
-        saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Julia","Rebakah","John"],
-        sundayNames:   ["Bridgette","Stefanie","Mahala","Kay","Becca","Abby"]
-      },
-      {
-        saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey","Paige"],
-        sundayNames:   ["Bridgette","Stefanie","Mahala","John","Kathy","Hannah"]
-      },
-      {
-        saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Becca","Abby","Hannah"],
-        sundayNames:   ["Bridgette","Stefanie","Mahala","Missie","Julia","Rebakah"]
-      },
-      {
-        saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Holli","Kay","John"],
-        sundayNames:   ["Bridgette","Stefanie","Mahala","Maddie","Kay","Becca"]
-      },
-      {
-        saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Kathy","Hannah","Julia"],
-        sundayNames:   ["Bridgette","Stefanie","Mahala","Nate","Kelsey","Becca"]
-      },
-      {
-        saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Maddie","Kay","Rebakah"],
-        sundayNames:   ["Bridgette","Stefanie","Mahala","Missie","John","Holli"]
-      },
-      {
-        saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Julia","Rebakah","Abby"],
-        sundayNames:   ["Bridgette","Stefanie","Mahala","Paige","Maddie","Kay"]
-      }
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey","Becca"], sundayNames: ["Bridgette","Stefanie","Mahala","Holli","Abby","John"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Becca","Abby","John"], sundayNames: ["Bridgette","Stefanie","Mahala","Missie","Paige","Julia"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Holli","Paige","Kathy"], sundayNames: ["Bridgette","Stefanie","Mahala","Kathy","Hannah","Julia"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey","Hannah"], sundayNames: ["Bridgette","Stefanie","Mahala","Julia","Rebakah","Maddie"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Maddie","Kay","Julia"], sundayNames: ["Bridgette","Stefanie","Mahala","Missie","Nate","Kelsey"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Julia","Rebakah","John"], sundayNames: ["Bridgette","Stefanie","Mahala","Kay","Becca","Abby"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey","Paige"], sundayNames: ["Bridgette","Stefanie","Mahala","John","Kathy","Hannah"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Becca","Abby","Hannah"], sundayNames: ["Bridgette","Stefanie","Mahala","Missie","Julia","Rebakah"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Holli","Kay","John"], sundayNames: ["Bridgette","Stefanie","Mahala","Maddie","Kay","Becca"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Kathy","Hannah","Julia"], sundayNames: ["Bridgette","Stefanie","Mahala","Nate","Kelsey","Becca"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Maddie","Kay","Rebakah"], sundayNames: ["Bridgette","Stefanie","Mahala","Missie","John","Holli"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Julia","Rebakah","Abby"], sundayNames: ["Bridgette","Stefanie","Mahala","Paige","Maddie","Kay"] }
     ];
 
-    // Colors
     const colorMap = {
-      "Bridgette": "black",
-      "Stefanie": "dimgray",
-      "Missie": "purple",
-      "Dana": "brown",
-      "Mahala": "teal",
-      "Nate": "darkorange",
-      "Kelsey": "darkorange",
-      "Becca": "darkgreen",
-      "Abby": "forestgreen",
-      "Holli": "royalblue",
-      "Paige": "slateblue",
-      "Kathy": "darkred",
-      "Hannah": "olive",
-      "Maddie": "darkcyan",
-      "Kay": "chocolate",
-      "Julia": "mediumvioletred",
-      "Rebakah": "red",
-      "John": "navy"
+      "Bridgette": "black","Stefanie": "dimgray","Missie": "purple","Dana": "brown","Mahala": "teal",
+      "Nate": "darkorange","Kelsey": "darkorange","Becca": "darkgreen","Abby": "forestgreen","Holli": "royalblue",
+      "Paige": "slateblue","Kathy": "darkred","Hannah": "olive","Maddie": "darkcyan","Kay": "chocolate",
+      "Julia": "mediumvioletred","Rebakah": "red","John": "navy"
     };
 
-    // Fairness priority for "normal" rotators (not core, not Holli, not N&K)
-    const fairnessPriority = [
-      "John",
-      "Becca",
-      "Abby",
-      "Hannah",
-      "Paige",
-      "Kathy",
-      "Maddie",
-      "Kay",
-      "Julia",
-      "Rebakah"
-    ];
-
-
+    const fairnessPriority = ["John","Becca","Abby","Hannah","Paige","Kathy","Maddie","Kay","Julia","Rebakah"];
     const protectedOccasional = ["Holli"];
 
     const weekContainer = document.getElementById("weekContainer");
@@ -289,16 +208,11 @@
     const printBtn = document.getElementById("printBtn");
     const startDateInput = document.getElementById("startDate");
 
-    // Build employee list from pattern
     const allNames = new Set();
-    baseWeeks.forEach(w => {
-      w.saturdayNames.forEach(n => allNames.add(n));
-      w.sundayNames.forEach(n => allNames.add(n));
-    });
+    baseWeeks.forEach(w => { w.saturdayNames.forEach(n => allNames.add(n)); w.sundayNames.forEach(n => allNames.add(n)); });
     Array.from(allNames).sort().forEach(n => {
       const opt = document.createElement("option");
-      opt.value = n;
-      opt.textContent = n;
+      opt.value = n; opt.textContent = n;
       employeeFilter.appendChild(opt);
     });
 
@@ -306,166 +220,77 @@
       const parts = value.split("-");
       return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
     }
-
-    function addDays(date, days) {
-      const d = new Date(date);
-      d.setDate(d.getDate() + days);
-      return d;
-    }
-
+    function addDays(date, days) { const d = new Date(date); d.setDate(d.getDate() + days); return d; }
     function formatPretty(date) {
       const opts = { weekday: "short", month: "short", day: "numeric", year: "numeric" };
       return date.toLocaleDateString(undefined, opts);
     }
-
-    function isMissieSunday(names) {
-      return names.includes("Missie");
-    }
-
+    function isMissieSunday(names) { return names.includes("Missie"); }
 
     function pickSaturday(names, requested, satCounts) {
       const core = ["Bridgette","Stefanie","Missie","Dana"];
       const selected = [];
-
-      // add core in order
-      names.forEach(n => {
-        if (core.includes(n) && !selected.includes(n)) {
-          selected.push(n);
-        }
-      });
-
-
+      const hasPair = names.includes("Nate") && names.includes("Kelsey");
+      const effectiveRequested = hasPair ? requested + 1 : requested;
+      names.forEach(n => { if (core.includes(n) && !selected.includes(n)) selected.push(n); });
       let remaining = names.filter(n => !core.includes(n));
-
-
-      remaining.sort((a,b) => {
-
-        const ca = satCounts[a] || 0;
-        const cb = satCounts[b] || 0;
-        if (ca !== cb) return ca - cb;
-        const ia = fairnessPriority.indexOf(a);
-        const ib = fairnessPriority.indexOf(b);
-        return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
-      });
-
-      for (let i = 0; i < remaining.length; i++) {
-        const name = remaining[i];
-
-
-        if ((name === "Nate" || name === "Kelsey") && !selected.includes("Nate") && !selected.includes("Kelsey")) {
-          // need room for 2
-          if (selected.length + 2 <= requested) {
-            selected.push("Nate");
-            selected.push("Kelsey");
-          }
+      remaining.sort((a,b)=>{const ca=satCounts[a]||0,cb=satCounts[b]||0;if(ca!==cb)return ca-cb;const ia=fairnessPriority.indexOf(a),ib=fairnessPriority.indexOf(b);return (ia===-1?999:ia)-(ib===-1?999:ib);});
+      for(const name of remaining){
+        if((name==="Nate"||name==="Kelsey")&&!selected.includes("Nate")&&!selected.includes("Kelsey")){
+          if(selected.length+2<=effectiveRequested){selected.push("Nate","Kelsey");}
           continue;
         }
-
-        if (!selected.includes(name) && selected.length < requested) {
-          selected.push(name);
-        }
+        if(!selected.includes(name)&&selected.length<effectiveRequested)selected.push(name);
       }
-
-      // increment counts for selected
-      selected.forEach(n => {
-        satCounts[n] = (satCounts[n] || 0) + 1;
-      });
-
+      selected.forEach(n=>satCounts[n]=(satCounts[n]||0)+1);
       return selected;
     }
 
-
     function pickSunday(names, requested, sunCounts) {
-
+      const hasPair = names.includes("Nate") && names.includes("Kelsey");
+      const effectiveRequested = hasPair ? requested + 1 : requested;
       const core = ["Bridgette","Stefanie","Mahala"];
       if (names.includes("Missie")) core.push("Missie");
-
       const selected = [];
-      names.forEach(n => {
-        if (core.includes(n) && !selected.includes(n)) {
-          selected.push(n);
-        }
-      });
-
-      // lane B = everyone else
+      names.forEach(n => { if (core.includes(n) && !selected.includes(n)) selected.push(n); });
       const remaining = names.filter(n => !core.includes(n));
-
-
       const protectedList = remaining.filter(n => protectedOccasional.includes(n));
-      let normalList = remaining.filter(n => !protectedOccasional.includes(n));
-
-      // sort normalList by (sunCounts, fairnessPriority)
-      normalList.sort((a,b) => {
-        const ca = sunCounts[a] || 0;
-        const cb = sunCounts[b] || 0;
-        if (ca !== cb) return ca - cb;
-        const ia = fairnessPriority.indexOf(a);
-        const ib = fairnessPriority.indexOf(b);
-        return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
-      });
-
-      
-      for (const p of protectedList) {
-        if (selected.length >= requested) break;
-        selected.push(p);
-      }
-
-      // add normal rotators
-      for (const n of normalList) {
-        if (selected.length >= requested) break;
-
-        if ((n === "Nate" || n === "Kelsey") && !selected.includes("Nate") && !selected.includes("Kelsey")) {
-          if (selected.length + 2 <= requested) {
-            selected.push("Nate");
-            selected.push("Kelsey");
-          }
+      const normalList = remaining.filter(n => !protectedOccasional.includes(n));
+      normalList.sort((a,b)=>{const ca=sunCounts[a]||0,cb=sunCounts[b]||0;if(ca!==cb)return ca-cb;const ia=fairnessPriority.indexOf(a),ib=fairnessPriority.indexOf(b);return (ia===-1?999:ia)-(ib===-1?999:ib);});
+      for(const p of protectedList){if(selected.length>=effectiveRequested)break;selected.push(p);}
+      for(const n of normalList){
+        if(selected.length>=effectiveRequested)break;
+        if((n==="Nate"||n==="Kelsey")&&!selected.includes("Nate")&&!selected.includes("Kelsey")){
+          if(selected.length+2<=effectiveRequested){selected.push("Nate","Kelsey");}
           continue;
         }
         selected.push(n);
       }
-
-      // increment counts
-      selected.forEach(n => {
-        sunCounts[n] = (sunCounts[n] || 0) + 1;
-      });
-
+      selected.forEach(n=>sunCounts[n]=(sunCounts[n]||0)+1);
       return selected;
     }
 
     function render() {
-      const satCount = parseInt(satCountInput.value, 10);
-      const sunCount = parseInt(sunCountInput.value, 10);
+      const satCount = parseInt(satCountInput.value,10);
+      const sunCount = parseInt(sunCountInput.value,10);
       const filter = employeeFilter.value;
       const start = parseDateInput(startDateInput.value);
-
-      // per-person counters reset each render
-      const satCounts = {};
-      const sunCounts = {};
-
+      const satCounts = {}, sunCounts = {};
       weekContainer.innerHTML = "";
-
       baseWeeks.forEach((weekPattern, idx) => {
         const satDate = addDays(start, idx * 7);
         const sunDate = addDays(satDate, 1);
-
         const card = document.createElement("div");
         card.className = "week-card";
-
         const title = document.createElement("div");
         title.className = "week-title";
         title.textContent = `Week ${idx + 1}`;
         card.appendChild(title);
 
-        // SATURDAY
         const satDisplay = pickSaturday(weekPattern.saturdayNames, satCount, satCounts);
         const satBlock = document.createElement("div");
         satBlock.className = "day-block";
-        satBlock.innerHTML = `
-          <div class="day-head">
-            <span class="day-name">Saturday</span>
-            <span class="day-date">${formatPretty(satDate)}</span>
-          </div>
-        `;
+        satBlock.innerHTML = `<div class="day-head"><span class="day-name">Saturday</span><span class="day-date">${formatPretty(satDate)}</span></div>`;
         const satNamesWrap = document.createElement("div");
         satNamesWrap.className = "names";
         satDisplay.forEach(n => {
@@ -478,26 +303,12 @@
           }
         });
         satBlock.appendChild(satNamesWrap);
-        if (satCount < 4) {
-          const warn = document.createElement("div");
-          warn.className = "warn";
-          warn.textContent = "Cannot go below Saturday core (4).";
-          satBlock.appendChild(warn);
-        }
-        if (filter === "__all" || satDisplay.includes(filter)) {
-          card.appendChild(satBlock);
-        }
+        if (filter === "__all" || satDisplay.includes(filter)) card.appendChild(satBlock);
 
-        // SUNDAY
         const sunDisplay = pickSunday(weekPattern.sundayNames, sunCount, sunCounts);
         const sunBlock = document.createElement("div");
         sunBlock.className = "day-block";
-        sunBlock.innerHTML = `
-          <div class="day-head">
-            <span class="day-name">Sunday</span>
-            <span class="day-date">${formatPretty(sunDate)}</span>
-          </div>
-        `;
+        sunBlock.innerHTML = `<div class="day-head"><span class="day-name">Sunday</span><span class="day-date">${formatPretty(sunDate)}</span></div>`;
         const sunNamesWrap = document.createElement("div");
         sunNamesWrap.className = "names";
         sunDisplay.forEach(n => {
@@ -510,21 +321,8 @@
           }
         });
         sunBlock.appendChild(sunNamesWrap);
-
-        const minSun = isMissieSunday(weekPattern.sundayNames) ? 4 : 3;
-        if (sunCount < minSun) {
-          const warn = document.createElement("div");
-          warn.className = "warn";
-          warn.textContent = `Cannot go below Sunday core (${minSun}).`;
-          sunBlock.appendChild(warn);
-        }
-        if (filter === "__all" || sunDisplay.includes(filter)) {
-          card.appendChild(sunBlock);
-        }
-
-        if (card.querySelectorAll(".day-block").length > 0) {
-          weekContainer.appendChild(card);
-        }
+        if (filter === "__all" || sunDisplay.includes(filter)) card.appendChild(sunBlock);
+        weekContainer.appendChild(card);
       });
     }
 
@@ -533,7 +331,6 @@
     employeeFilter.addEventListener("change", render);
     startDateInput.addEventListener("change", render);
     printBtn.addEventListener("click", () => window.print());
-
     render();
   </script>
 </body>
