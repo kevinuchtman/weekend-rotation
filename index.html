@@ -158,7 +158,8 @@
     .weekend-columns {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 2rem;
+      gap: 1.5rem; /* space between Sunday and Saturday */
+      align-items: flex-start;
     }
     .calendar-day-block {
       background: #f8fafc;
@@ -166,6 +167,7 @@
       border-radius: .5rem;
       padding: .5rem .6rem;
       box-shadow: 0 2px 6px rgba(15,23,42,0.03);
+      min-height: 120px;
     }
     .calendar-day-header {
       display: flex;
@@ -195,13 +197,6 @@
       width: fit-content;
     }
 
-    @media (max-width: 700px) {
-      .weekend-columns {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-      }
-    }
-
     @media print {
       header {
         display: none !important;
@@ -222,7 +217,6 @@
     <div class="controls-row">
       <div class="control-block">
         <label for="startDate">Start Sunday</label>
-        <!-- Sunday of the Dec 6–7 weekend -->
         <input type="date" id="startDate" value="2025-12-07" />
       </div>
       <div class="control-block">
@@ -525,6 +519,11 @@
         }
       });
     });
+
+    function parseDateInput(value) {
+      const parts = value.split("-");
+      return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    }
 
     render();
   </script>
