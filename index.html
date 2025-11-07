@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Weekend Rotation Schedule v4.4</title>
+  <title>Weekend Rotation Schedule</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
@@ -55,7 +55,7 @@
       max-width: 9rem;
       padding: .2rem .4rem;
     }
-    #printBtn {
+    #printBtn, .view-btn {
       padding: 0.5rem 0.8rem;
       border-radius: .5rem;
       border: 1px solid var(--border);
@@ -64,8 +64,13 @@
       font-size: .8rem;
       cursor: pointer;
     }
-    #printBtn:hover {
+    #printBtn:hover, .view-btn.active {
       background: #075985;
+    }
+    .view-toggle {
+      display: flex;
+      gap: .5rem;
+      align-items: center;
     }
     main {
       padding: 1.5rem;
@@ -131,6 +136,58 @@
       font-size: .65rem;
       margin-top: .35rem;
     }
+    .hidden {
+      display: none !important;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(110px, 1fr));
+      gap: .5rem;
+    }
+    .calendar-week {
+      display: contents;
+    }
+    .calendar-day {
+      background: white;
+      border: 1px solid #d9dee5;
+      border-radius: .5rem;
+      min-height: 110px;
+      padding: .4rem .45rem;
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+    }
+    .calendar-day-header {
+      display: flex;
+      justify-content: space-between;
+      gap: .3rem;
+      font-size: .7rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .calendar-day-names {
+      display: flex;
+      flex-direction: column;
+      gap: .15rem;
+      margin-top: .2rem;
+    }
+    .calendar-name {
+      font-size: .65rem;
+      padding: .05rem .4rem;
+      border-radius: .35rem;
+      background: #f8fafc;
+      border: 1px solid rgba(15,23,42,.03);
+      width: fit-content;
+    }
+    .calendar-head-row {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(110px, 1fr));
+      gap: .5rem;
+      margin-bottom: .4rem;
+      font-size: .7rem;
+      font-weight: 600;
+      color: #475569;
+    }
     @media print {
       header {
         display: none !important;
@@ -147,7 +204,7 @@
 </head>
 <body>
   <header>
-    <h1>Weekend Rotation Schedule v4.5</h1>
+    <h1>Weekend Rotation Schedule v4.7</h1>
     <div class="controls-row">
       <div class="control-block">
         <label for="startDate">Start Saturday</label>
@@ -167,12 +224,28 @@
           <option value="__all">Show everyone</option>
         </select>
       </div>
+      <div class="view-toggle">
+        <button class="view-btn active" data-view="default">Default view</button>
+        <button class="view-btn" data-view="calendar">Calendar view</button>
+      </div>
       <button id="printBtn">🖨️ Print / Export PDF</button>
     </div>
   </header>
 
   <main>
-    <div id="weekContainer" class="week-grid"></div>
+    <div id="defaultView" class="week-grid"></div>
+    <div id="calendarView" class="hidden">
+      <div class="calendar-head-row">
+        <div>Sunday</div>
+        <div>Monday</div>
+        <div>Tuesday</div>
+        <div>Wednesday</div>
+        <div>Thursday</div>
+        <div>Friday</div>
+        <div>Saturday</div>
+      </div>
+      <div id="calendarBody" class="calendar-grid"></div>
+    </div>
   </main>
 
   <script>
@@ -201,12 +274,15 @@
     const fairnessPriority = ["John","Becca","Abby","Hannah","Paige","Kathy","Maddie","Kay","Julia","Rebakah"];
     const protectedOccasional = ["Holli"];
 
-    const weekContainer = document.getElementById("weekContainer");
+    const defaultView = document.getElementById("defaultView");
+    const calendarView = document.getElementById("calendarView");
+    const calendarBody = document.getElementById("calendarBody");
     const satCountInput = document.getElementById("satCount");
     const sunCountInput = document.getElementById("sunCount");
     const employeeFilter = document.getElementById("employeeFilter");
     const printBtn = document.getElementById("printBtn");
     const startDateInput = document.getElementById("startDate");
+    const viewButtons = document.querySelectorAll(".view-btn");
 
     const allNames = new Set();
     baseWeeks.forEach(w => { w.saturdayNames.forEach(n => allNames.add(n)); w.sundayNames.forEach(n => allNames.add(n)); });
@@ -223,6 +299,10 @@
     function addDays(date, days) { const d = new Date(date); d.setDate(d.getDate() + days); return d; }
     function formatPretty(date) {
       const opts = { weekday: "short", month: "short", day: "numeric", year: "numeric" };
+      return date.toLocaleDateString(undefined, opts);
+    }
+    function formatShort(date) {
+      const opts = { month: "short", day: "numeric" };
       return date.toLocaleDateString(undefined, opts);
     }
     function isMissieSunday(names) { return names.includes("Missie"); }
@@ -275,11 +355,18 @@
       const sunCount = parseInt(sunCountInput.value,10);
       const filter = employeeFilter.value;
       const start = parseDateInput(startDateInput.value);
-      const satCounts = {}, sunCounts = {};
-      weekContainer.innerHTML = "";
+      const satCounts = {};
+      const sunCounts = {};
+      defaultView.innerHTML = "";
+      calendarBody.innerHTML = "";
+
       baseWeeks.forEach((weekPattern, idx) => {
         const satDate = addDays(start, idx * 7);
         const sunDate = addDays(satDate, 1);
+
+        const satDisplay = pickSaturday(weekPattern.saturdayNames, satCount, satCounts);
+        const sunDisplay = pickSunday(weekPattern.sundayNames, sunCount, sunCounts);
+
         const card = document.createElement("div");
         card.className = "week-card";
         const title = document.createElement("div");
@@ -287,7 +374,6 @@
         title.textContent = `Week ${idx + 1}`;
         card.appendChild(title);
 
-        const satDisplay = pickSaturday(weekPattern.saturdayNames, satCount, satCounts);
         const satBlock = document.createElement("div");
         satBlock.className = "day-block";
         satBlock.innerHTML = `<div class="day-head"><span class="day-name">Saturday</span><span class="day-date">${formatPretty(satDate)}</span></div>`;
@@ -303,9 +389,7 @@
           }
         });
         satBlock.appendChild(satNamesWrap);
-        if (filter === "__all" || satDisplay.includes(filter)) card.appendChild(satBlock);
 
-        const sunDisplay = pickSunday(weekPattern.sundayNames, sunCount, sunCounts);
         const sunBlock = document.createElement("div");
         sunBlock.className = "day-block";
         sunBlock.innerHTML = `<div class="day-head"><span class="day-name">Sunday</span><span class="day-date">${formatPretty(sunDate)}</span></div>`;
@@ -321,8 +405,56 @@
           }
         });
         sunBlock.appendChild(sunNamesWrap);
+
         if (filter === "__all" || sunDisplay.includes(filter)) card.appendChild(sunBlock);
-        weekContainer.appendChild(card);
+        if (filter === "__all" || satDisplay.includes(filter)) card.appendChild(satBlock);
+        defaultView.appendChild(card);
+
+        const weekRow = document.createElement("div");
+        weekRow.className = "calendar-week";
+
+        const sunCell = document.createElement("div");
+        sunCell.className = "calendar-day";
+        sunCell.innerHTML = `<div class="calendar-day-header"><span>${formatShort(sunDate)}</span><span></span></div>`;
+        const sunNamesCol = document.createElement("div");
+        sunNamesCol.className = "calendar-day-names";
+        sunDisplay.forEach(n => {
+          if (filter === "__all" || n === filter) {
+            const d = document.createElement("div");
+            d.className = "calendar-name";
+            d.textContent = n;
+            d.style.color = colorMap[n] || "black";
+            sunNamesCol.appendChild(d);
+          }
+        });
+        sunCell.appendChild(sunNamesCol);
+        weekRow.appendChild(sunCell);
+
+        for (let i = 0; i < 5; i++) {
+          const emptyCell = document.createElement("div");
+          emptyCell.className = "calendar-day";
+          emptyCell.innerHTML = `<div class="calendar-day-header"><span></span></div>`;
+          weekRow.appendChild(emptyCell);
+        }
+
+        const satCell = document.createElement("div");
+        satCell.className = "calendar-day";
+        satCell.innerHTML = `<div class="calendar-day-header"><span>${formatShort(satDate)}</span><span></span></div>`;
+        const satNamesCol2 = document.createElement("div");
+        satNamesCol2.className = "calendar-day-names";
+        satDisplay.forEach(n => {
+          if (filter === "__all" || n === filter) {
+            const d = document.createElement("div");
+            d.className = "calendar-name";
+            d.textContent = n;
+            d.style.color = colorMap[n] || "black";
+            satNamesCol2.appendChild(d);
+          }
+        });
+        satCell.appendChild(satNamesCol2);
+        weekRow.appendChild(satCell);
+
+        calendarBody.appendChild(weekRow);
       });
     }
 
@@ -331,6 +463,21 @@
     employeeFilter.addEventListener("change", render);
     startDateInput.addEventListener("change", render);
     printBtn.addEventListener("click", () => window.print());
+    viewButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        viewButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const view = btn.getAttribute("data-view");
+        if (view === "default") {
+          defaultView.classList.remove("hidden");
+          calendarView.classList.add("hidden");
+        } else {
+          calendarView.classList.remove("hidden");
+          defaultView.classList.add("hidden");
+        }
+      });
+    });
+
     render();
   </script>
 </body>
