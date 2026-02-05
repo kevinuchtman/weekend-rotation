@@ -158,7 +158,7 @@
     .weekend-columns {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.5rem; /* space between Sunday and Saturday */
+      gap: 1.5rem;
       align-items: flex-start;
     }
     .calendar-day-block {
@@ -198,16 +198,9 @@
     }
 
     @media print {
-      header {
-        display: none !important;
-      }
-      body {
-        background: white;
-      }
-      @page {
-        size: landscape;
-        margin: 0.5in;
-      }
+      header { display: none !important; }
+      body { background: white; }
+      @page { size: landscape; margin: 0.5in; }
     }
   </style>
 </head>
@@ -248,25 +241,24 @@
 
   <script>
     const baseWeeks = [
-      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey","Becca"], sundayNames: ["Bridgette","Stefanie","Mahala","Holli","Abby","John"] },
-      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Becca","Abby","John"], sundayNames: ["Bridgette","Stefanie","Mahala","Missie","Paige","Julia"] },
-      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Holli","Paige","Kathy"], sundayNames: ["Bridgette","Stefanie","Mahala","Kathy","Hannah","Julia"] },
-      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey","Hannah"], sundayNames: ["Bridgette","Stefanie","Mahala","Julia","Rebakah","Maddie"] },
-      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Maddie","Kay","Julia"], sundayNames: ["Bridgette","Stefanie","Mahala","Missie","Nate","Kelsey"] },
-      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Julia","Rebakah","John"], sundayNames: ["Bridgette","Stefanie","Mahala","Kay","Becca","Abby"] },
-      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey","Paige"], sundayNames: ["Bridgette","Stefanie","Mahala","John","Kathy","Hannah"] },
-      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Becca","Abby","Hannah"], sundayNames: ["Bridgette","Stefanie","Mahala","Missie","Julia","Rebakah"] },
-      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Holli","Kay","John"], sundayNames: ["Bridgette","Stefanie","Mahala","Maddie","Kay","Becca"] },
-      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Kathy","Hannah","Julia"], sundayNames: ["Bridgette","Stefanie","Mahala","Nate","Kelsey","Becca"] },
-      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Maddie","Kay","Rebakah"], sundayNames: ["Bridgette","Stefanie","Mahala","Missie","John","Holli"] },
-      { saturdayNames: ["Bridgette","Stefanie","Missie","Dana","Julia","Rebakah","Abby"], sundayNames: ["Bridgette","Stefanie","Mahala","Paige","Maddie","Kay"] }
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Nate","Kelsey","Becca","Emily"], sundayNames: ["Bridgette","Stefanie","Mahala","Holli","Abby","Leslie"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Becca","Abby","Emily","Leslie"], sundayNames: ["Bridgette","Stefanie","Mahala","Missie","Paige","Julia"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Holli","Paige","Kathy","Emily"], sundayNames: ["Bridgette","Stefanie","Mahala","Kathy","Hannah","Leslie"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Nate","Kelsey","Hannah","Emily"], sundayNames: ["Bridgette","Stefanie","Mahala","Julia","Rebakah","Leslie"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Kay","Julia","Emily","Leslie"], sundayNames: ["Bridgette","Stefanie","Mahala","Missie","Nate","Kelsey"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Julia","Rebakah","Emily","Leslie"], sundayNames: ["Bridgette","Stefanie","Mahala","Kay","Becca","Abby"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Nate","Kelsey","Paige","Emily"], sundayNames: ["Bridgette","Stefanie","Mahala","Kathy","Hannah","Leslie"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Becca","Abby","Hannah","Emily"], sundayNames: ["Bridgette","Stefanie","Mahala","Missie","Julia","Rebakah"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Holli","Kay","Emily","Leslie"], sundayNames: ["Bridgette","Stefanie","Mahala","Kay","Becca","Abby"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Kathy","Hannah","Julia","Emily"], sundayNames: ["Bridgette","Stefanie","Mahala","Nate","Kelsey","Leslie"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Kay","Rebakah","Emily","Leslie"], sundayNames: ["Bridgette","Stefanie","Mahala","Missie","Holli","Paige"] },
+      { saturdayNames: ["Bridgette","Stefanie","Missie","Julia","Rebakah","Abby","Emily"], sundayNames: ["Bridgette","Stefanie","Mahala","Paige","Kay","Leslie"] }
     ];
 
     const colorMap = {
       "Bridgette": "black",
       "Stefanie": "dimgray",
       "Missie": "purple",
-      "Dana": "brown",
       "Mahala": "teal",
       "Nate": "darkorange",
       "Kelsey": "darkorange",
@@ -276,14 +268,14 @@
       "Paige": "slateblue",
       "Kathy": "darkred",
       "Hannah": "olive",
-      "Maddie": "darkcyan",
       "Kay": "chocolate",
       "Julia": "mediumvioletred",
       "Rebakah": "red",
-      "John": "navy"
+      "Emily": "darkcyan",
+      "Leslie": "indigo"
     };
 
-    const fairnessPriority = ["John","Becca","Abby","Hannah","Paige","Kathy","Maddie","Kay","Julia","Rebakah"];
+    const fairnessPriority = ["Becca","Abby","Hannah","Paige","Kathy","Emily","Leslie","Kay","Julia","Rebakah"];
     const protectedOccasional = ["Holli"];
 
     const defaultView = document.getElementById("defaultView");
@@ -325,24 +317,29 @@
     }
 
     function pickSaturday(names, requested, satCounts) {
-      const core = ["Bridgette","Stefanie","Missie","Dana"];
+      const core = ["Bridgette","Stefanie","Missie"];
       const selected = [];
       const hasPair = names.includes("Nate") && names.includes("Kelsey");
       const effectiveRequested = hasPair ? requested + 1 : requested;
+
       names.forEach(n => { if (core.includes(n) && !selected.includes(n)) selected.push(n); });
+
       let remaining = names.filter(n => !core.includes(n));
-      remaining.sort((a,b)=>{const ca=satCounts[a]||0,cb=satCounts[b]||0;if(ca!==cb)return ca-cb;const ia=fairnessPriority.indexOf(a),ib=fairnessPriority.indexOf(b);return (ia===-1?999:ia)-(ib===-1?999:ib);});
+      remaining.sort((a,b)=>{
+        const ca=satCounts[a]||0, cb=satCounts[b]||0;
+        if(ca!==cb) return ca-cb;
+        const ia=fairnessPriority.indexOf(a), ib=fairnessPriority.indexOf(b);
+        return (ia===-1?999:ia)-(ib===-1?999:ib);
+      });
+
       for (const name of remaining) {
         if ((name === "Nate" || name === "Kelsey") && !selected.includes("Nate") && !selected.includes("Kelsey")) {
-          if (selected.length + 2 <= effectiveRequested) {
-            selected.push("Nate","Kelsey");
-          }
+          if (selected.length + 2 <= effectiveRequested) selected.push("Nate","Kelsey");
           continue;
         }
-        if (!selected.includes(name) && selected.length < effectiveRequested) {
-          selected.push(name);
-        }
+        if (!selected.includes(name) && selected.length < effectiveRequested) selected.push(name);
       }
+
       selected.forEach(n => satCounts[n] = (satCounts[n] || 0) + 1);
       return selected;
     }
@@ -350,28 +347,38 @@
     function pickSunday(names, requested, sunCounts) {
       const hasPair = names.includes("Nate") && names.includes("Kelsey");
       const effectiveRequested = hasPair ? requested + 1 : requested;
+
       const core = ["Bridgette","Stefanie","Mahala"];
       if (names.includes("Missie")) core.push("Missie");
+
       const selected = [];
       names.forEach(n => { if (core.includes(n) && !selected.includes(n)) selected.push(n); });
+
       const remaining = names.filter(n => !core.includes(n));
       const protectedList = remaining.filter(n => protectedOccasional.includes(n));
       const normalList = remaining.filter(n => !protectedOccasional.includes(n));
-      normalList.sort((a,b)=>{const ca=sunCounts[a]||0,cb=sunCounts[b]||0;if(ca!==cb)return ca-cb;const ia=fairnessPriority.indexOf(a),ib=fairnessPriority.indexOf(b);return (ia===-1?999:ia)-(ib===-1?999:ib);});
+
+      normalList.sort((a,b)=>{
+        const ca=sunCounts[a]||0, cb=sunCounts[b]||0;
+        if(ca!==cb) return ca-cb;
+        const ia=fairnessPriority.indexOf(a), ib=fairnessPriority.indexOf(b);
+        return (ia===-1?999:ia)-(ib===-1?999:ib);
+      });
+
       for (const p of protectedList) {
         if (selected.length >= effectiveRequested) break;
         selected.push(p);
       }
+
       for (const n of normalList) {
         if (selected.length >= effectiveRequested) break;
         if ((n === "Nate" || n === "Kelsey") && !selected.includes("Nate") && !selected.includes("Kelsey")) {
-          if (selected.length + 2 <= effectiveRequested) {
-            selected.push("Nate","Kelsey");
-          }
+          if (selected.length + 2 <= effectiveRequested) selected.push("Nate","Kelsey");
           continue;
         }
         selected.push(n);
       }
+
       selected.forEach(n => sunCounts[n] = (sunCounts[n] || 0) + 1);
       return selected;
     }
@@ -381,8 +388,10 @@
       const sunCount = parseInt(sunCountInput.value, 10);
       const filter = employeeFilter.value;
       const start = parseDateInput(startDateInput.value);
+
       const satCounts = {};
       const sunCounts = {};
+
       defaultView.innerHTML = "";
       calendarView.innerHTML = "";
 
@@ -395,6 +404,7 @@
 
         const card = document.createElement("div");
         card.className = "week-card";
+
         const title = document.createElement("div");
         title.className = "week-title";
         title.textContent = `Week ${idx + 1}`;
@@ -415,9 +425,7 @@
           }
         });
         sunBlock.appendChild(sunNamesWrap);
-        if (filter === "__all" || sunDisplay.includes(filter)) {
-          card.appendChild(sunBlock);
-        }
+        if (filter === "__all" || sunDisplay.includes(filter)) card.appendChild(sunBlock);
 
         const satBlock = document.createElement("div");
         satBlock.className = "day-block";
@@ -434,14 +442,13 @@
           }
         });
         satBlock.appendChild(satNamesWrap);
-        if (filter === "__all" || satDisplay.includes(filter)) {
-          card.appendChild(satBlock);
-        }
+        if (filter === "__all" || satDisplay.includes(filter)) card.appendChild(satBlock);
 
         defaultView.appendChild(card);
 
         const weekRow = document.createElement("div");
         weekRow.className = "weekend-row";
+
         const weekendTitle = document.createElement("div");
         weekendTitle.className = "weekend-title";
         weekendTitle.textContent = `Week ${idx + 1}`;
@@ -519,11 +526,6 @@
         }
       });
     });
-
-    function parseDateInput(value) {
-      const parts = value.split("-");
-      return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-    }
 
     render();
   </script>
