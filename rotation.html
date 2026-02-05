@@ -130,85 +130,68 @@
 
   <main>
     <p class="legend">
-      This schedule reflects your constraints: Bridgette &amp; Stefanie every weekend; Dana every Saturday; Mahala every Sunday;
-      Missie every Saturday + every 3rd Sunday; Nate &amp; Kelsey always together.
-      Select a name to see only their weekends.
+      Constraints reflected: Bridgette &amp; Stefanie every weekend; Mahala every Sunday; Missie every Saturday + every 3rd Sunday;
+      Nate &amp; Kelsey always together. Select a name to see only their weekends.
     </p>
     <div id="weekContainer" class="week-grid"></div>
   </main>
 
   <script>
-    // Our 12-week schedule, starting Dec 6–7, 2025
-    // Each entry = one weekend
     const weekends = [
-      {
-        label: "Week 1",
-        saturday: { date: "Sat, Dec 6, 2025", names: ["Bridgette","Stefanie","Missie","Dana","Becca","Abby"] },
+      { label: "Week 1",
+        saturday: { date: "Sat, Dec 6, 2025", names: ["Bridgette","Stefanie","Missie","Becca","Abby","Emily"] },
         sunday:   { date: "Sun, Dec 7, 2025", names: ["Bridgette","Stefanie","Mahala","Becca","Abby"] }
       },
-      {
-        label: "Week 2",
-        saturday: { date: "Sat, Dec 13, 2025", names: ["Bridgette","Stefanie","Missie","Dana","Holli","Paige"] },
+      { label: "Week 2",
+        saturday: { date: "Sat, Dec 13, 2025", names: ["Bridgette","Stefanie","Missie","Holli","Paige","Leslie"] },
         sunday:   { date: "Sun, Dec 14, 2025", names: ["Bridgette","Stefanie","Mahala","Missie","Kathy"] }
       },
-      {
-        label: "Week 3",
-        saturday: { date: "Sat, Dec 20, 2025", names: ["Bridgette","Stefanie","Missie","Dana","Kathy","Hannah"] },
+      { label: "Week 3",
+        saturday: { date: "Sat, Dec 20, 2025", names: ["Bridgette","Stefanie","Missie","Kathy","Hannah","Emily"] },
         sunday:   { date: "Sun, Dec 21, 2025", names: ["Bridgette","Stefanie","Mahala","Holli","Paige"] }
       },
-      {
-        label: "Week 4",
-        saturday: { date: "Sat, Dec 27, 2025", names: ["Bridgette","Stefanie","Missie","Dana","Maddie","Kay"] },
+      { label: "Week 4",
+        saturday: { date: "Sat, Dec 27, 2025", names: ["Bridgette","Stefanie","Missie","Kay","Julia","Leslie"] },
         sunday:   { date: "Sun, Dec 28, 2025", names: ["Bridgette","Stefanie","Mahala","Julia","Rebakah"] }
       },
-      {
-        label: "Week 5",
-        saturday: { date: "Sat, Jan 3, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Julia","Rebakah"] },
-        sunday:   { date: "Sun, Jan 4, 2026", names: ["Bridgette","Stefanie","Mahala","Missie","John"] }
+      { label: "Week 5",
+        saturday: { date: "Sat, Jan 3, 2026", names: ["Bridgette","Stefanie","Missie","Julia","Rebakah","Emily"] },
+        sunday:   { date: "Sun, Jan 4, 2026", names: ["Bridgette","Stefanie","Mahala","Missie","Hannah"] }
       },
-      {
-        label: "Week 6",
-        saturday: { date: "Sat, Jan 10, 2026", names: ["Bridgette","Stefanie","Missie","Dana","John","Julia"] },
-        sunday:   { date: "Sun, Jan 11, 2026", names: ["Bridgette","Stefanie","Mahala","John","Hannah"] }
+      { label: "Week 6",
+        saturday: { date: "Sat, Jan 10, 2026", names: ["Bridgette","Stefanie","Missie","Becca","Abby","Leslie"] },
+        sunday:   { date: "Sun, Jan 11, 2026", names: ["Bridgette","Stefanie","Mahala","Kay","Hannah"] }
       },
-      {
-        label: "Week 7",
-        saturday: { date: "Sat, Jan 17, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey"] },
-        sunday:   { date: "Sun, Jan 18, 2026", names: ["Bridgette","Stefanie","Mahala","Kathy","Maddie"] }
+      { label: "Week 7",
+        saturday: { date: "Sat, Jan 17, 2026", names: ["Bridgette","Stefanie","Missie","Nate","Kelsey","Paige"] },
+        sunday:   { date: "Sun, Jan 18, 2026", names: ["Bridgette","Stefanie","Mahala","Kathy","Emily"] }
       },
-      {
-        label: "Week 8",
-        saturday: { date: "Sat, Jan 24, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Becca","Abby"] },
+      { label: "Week 8",
+        saturday: { date: "Sat, Jan 24, 2026", names: ["Bridgette","Stefanie","Missie","Kathy","Hannah","Leslie"] },
         sunday:   { date: "Sun, Jan 25, 2026", names: ["Bridgette","Stefanie","Mahala","Missie","Becca"] }
       },
-      {
-        label: "Week 9",
-        saturday: { date: "Sat, Jan 31, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Holli","Paige"] },
-        sunday:   { date: "Sun, Feb 1, 2026", names: ["Bridgette","Stefanie","Mahala","Maddie","Kay"] }
+      { label: "Week 9",
+        saturday: { date: "Sat, Jan 31, 2026", names: ["Bridgette","Stefanie","Missie","Holli","Kay","Emily"] },
+        sunday:   { date: "Sun, Feb 1, 2026", names: ["Bridgette","Stefanie","Mahala","Kay","Becca"] }
       },
-      {
-        label: "Week 10",
-        saturday: { date: "Sat, Feb 7, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Kathy","Hannah"] },
+      { label: "Week 10",
+        saturday: { date: "Sat, Feb 7, 2026", names: ["Bridgette","Stefanie","Missie","Nate","Kelsey","Abby"] },
         sunday:   { date: "Sun, Feb 8, 2026", names: ["Bridgette","Stefanie","Mahala","Nate","Kelsey"] }
       },
-      {
-        label: "Week 11",
-        saturday: { date: "Sat, Feb 14, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Maddie","Kay"] },
-        sunday:   { date: "Sun, Feb 15, 2026", names: ["Bridgette","Stefanie","Mahala","Missie","Hannah"] }
+      { label: "Week 11",
+        saturday: { date: "Sat, Feb 14, 2026", names: ["Bridgette","Stefanie","Missie","Rebakah","Abby","Leslie"] },
+        sunday:   { date: "Sun, Feb 15, 2026", names: ["Bridgette","Stefanie","Mahala","Missie","Paige"] }
       },
-      {
-        label: "Week 12",
-        saturday: { date: "Sat, Feb 21, 2026", names: ["Bridgette","Stefanie","Missie","Dana","Nate","Kelsey"] },
-        sunday:   { date: "Sun, Feb 22, 2026", names: ["Bridgette","Stefanie","Mahala","Becca","Abby"] }
+      { label: "Week 12",
+        saturday: { date: "Sat, Feb 21, 2026", names: ["Bridgette","Stefanie","Missie","Nate","Kelsey","Emily"] },
+        sunday:   { date: "Sun, Feb 22, 2026", names: ["Bridgette","Stefanie","Mahala","Abby","Leslie"] }
       }
     ];
 
-    // Color map (to match your PDF colors roughly)
     const colorMap = {
       "Bridgette": "black",
       "Stefanie": "dimgray",
       "Missie": "purple",
-      "Dana": "brown",
       "Mahala": "teal",
       "Nate": "darkorange",
       "Kelsey": "darkorange",
@@ -218,23 +201,22 @@
       "Paige": "slateblue",
       "Kathy": "darkred",
       "Hannah": "olive",
-      "Maddie": "darkcyan",
       "Kay": "chocolate",
       "Julia": "mediumvioletred",
       "Rebakah": "red",
-      "John": "navy"
+      "Emily": "darkcyan",
+      "Leslie": "indigo"
     };
 
     const weekContainer = document.getElementById("weekContainer");
     const employeeFilter = document.getElementById("employeeFilter");
 
-    // Build unique employee list
     const allNames = new Set();
     weekends.forEach(w => {
       w.saturday.names.forEach(n => allNames.add(n));
       w.sunday.names.forEach(n => allNames.add(n));
     });
-    // Add to select
+
     Array.from(allNames).sort().forEach(name => {
       const opt = document.createElement("option");
       opt.value = name;
@@ -244,10 +226,9 @@
 
     function renderWeekends(filterName = "__all") {
       weekContainer.innerHTML = "";
-      weekends.forEach((w, idx) => {
-        const satHas = filterName === "__all" ? true : w.saturday.names.includes(filterName);
-        const sunHas = filterName === "__all" ? true : w.sunday.names.includes(filterName);
-        // If filtering and this weekend doesn't include the employee on either day, skip
+      weekends.forEach(w => {
+        const satHas = (filterName === "__all") ? true : w.saturday.names.includes(filterName);
+        const sunHas = (filterName === "__all") ? true : w.sunday.names.includes(filterName);
         if (filterName !== "__all" && !satHas && !sunHas) return;
 
         const card = document.createElement("div");
@@ -258,7 +239,6 @@
         title.textContent = `${w.label}`;
         card.appendChild(title);
 
-        // Saturday block
         if (filterName === "__all" || satHas) {
           const sat = document.createElement("div");
           sat.className = "day-block";
@@ -283,7 +263,6 @@
           card.appendChild(sat);
         }
 
-        // Sunday block
         if (filterName === "__all" || sunHas) {
           const sun = document.createElement("div");
           sun.className = "day-block";
@@ -316,7 +295,6 @@
       renderWeekends(e.target.value);
     });
 
-    // initial render
     renderWeekends();
   </script>
 </body>
