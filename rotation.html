@@ -9,7 +9,6 @@
       --bg: #f4f5f7;
       --card: #ffffff;
       --border: #d9dee5;
-      --accent: #2b5cff;
       --text: #101828;
     }
     body {
@@ -25,28 +24,17 @@
       padding: 1rem 1.5rem;
       display: flex;
       justify-content: space-between;
-      gap: 1rem;
       flex-wrap: wrap;
       align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 10;
     }
     h1 {
       font-size: 1.1rem;
       margin: 0;
     }
-    .controls {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      align-items: center;
-    }
     select {
       padding: 0.35rem 0.5rem;
       border-radius: 0.375rem;
       border: 1px solid var(--border);
-      background: #fff;
     }
     main {
       padding: 1.5rem;
@@ -62,240 +50,194 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 0.75rem;
-      padding: 0.75rem 0.9rem 0.6rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.03);
+      padding: 0.75rem;
     }
     .week-title {
       font-weight: 600;
-      font-size: 0.9rem;
+      margin-bottom: .5rem;
     }
     .day-block {
       background: #f8fafc;
       border: 1px solid #edf0f4;
       border-radius: 0.5rem;
-      padding: 0.5rem 0.6rem;
+      padding: 0.5rem;
+      margin-bottom: .4rem;
     }
     .day-head {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .day-name {
-      font-weight: 600;
-      font-size: 0.78rem;
-    }
-    .day-date {
-      font-size: 0.7rem;
-      color: #475569;
+      font-size: 0.75rem;
     }
     .names {
-      margin-top: 0.45rem;
+      margin-top: .4rem;
       display: flex;
       flex-wrap: wrap;
-      gap: 0.35rem;
+      gap: .3rem;
     }
     .name-pill {
-      background: #fff;
-      border: 1px solid rgba(15,23,42,0.05);
-      border-radius: 9999px;
-      padding: 0.15rem 0.45rem;
-      font-size: 0.68rem;
-      line-height: 1.2;
-      white-space: nowrap;
-    }
-    .hidden {
-      display: none !important;
-    }
-    .legend {
-      margin-bottom: 1rem;
-      font-size: 0.75rem;
-      color: #475569;
+      border-radius: 999px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.65rem;
+      background: white;
+      border: 1px solid #eee;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Weekend Rotation (Dec 6, 2025 – Feb 22, 2026)</h1>
-    <div class="controls">
-      <label for="employeeFilter" style="font-size:0.8rem;">Filter by employee:</label>
-      <select id="employeeFilter">
-        <option value="__all">Show everyone</option>
-      </select>
-    </div>
-  </header>
 
-  <main>
-    <p class="legend">
-      Constraints reflected: Bridgette &amp; Stefanie every weekend; Mahala every Sunday; Missie every Saturday + every 3rd Sunday;
-      Nate &amp; Kelsey always together. Select a name to see only their weekends.
-    </p>
-    <div id="weekContainer" class="week-grid"></div>
-  </main>
+<header>
+  <h1>Weekend Rotation</h1>
+  <select id="employeeFilter">
+    <option value="__all">Show everyone</option>
+  </select>
+</header>
 
-  <script>
-    const weekends = [
-      { label: "Week 1",
-        saturday: { date: "Sat, Dec 6, 2025", names: ["Bridgette","Stefanie","Missie","Becca","Abby","Emily"] },
-        sunday:   { date: "Sun, Dec 7, 2025", names: ["Bridgette","Stefanie","Mahala","Becca","Abby"] }
-      },
-      { label: "Week 2",
-        saturday: { date: "Sat, Dec 13, 2025", names: ["Bridgette","Stefanie","Missie","Holli","Paige","Leslie"] },
-        sunday:   { date: "Sun, Dec 14, 2025", names: ["Bridgette","Stefanie","Mahala","Missie","Kathy"] }
-      },
-      { label: "Week 3",
-        saturday: { date: "Sat, Dec 20, 2025", names: ["Bridgette","Stefanie","Missie","Kathy","Hannah","Emily"] },
-        sunday:   { date: "Sun, Dec 21, 2025", names: ["Bridgette","Stefanie","Mahala","Holli","Paige"] }
-      },
-      { label: "Week 4",
-        saturday: { date: "Sat, Dec 27, 2025", names: ["Bridgette","Stefanie","Missie","Kay","Julia","Leslie"] },
-        sunday:   { date: "Sun, Dec 28, 2025", names: ["Bridgette","Stefanie","Mahala","Julia","Rebakah"] }
-      },
-      { label: "Week 5",
-        saturday: { date: "Sat, Jan 3, 2026", names: ["Bridgette","Stefanie","Missie","Julia","Rebakah","Emily"] },
-        sunday:   { date: "Sun, Jan 4, 2026", names: ["Bridgette","Stefanie","Mahala","Missie","Hannah"] }
-      },
-      { label: "Week 6",
-        saturday: { date: "Sat, Jan 10, 2026", names: ["Bridgette","Stefanie","Missie","Becca","Abby","Leslie"] },
-        sunday:   { date: "Sun, Jan 11, 2026", names: ["Bridgette","Stefanie","Mahala","Kay","Hannah"] }
-      },
-      { label: "Week 7",
-        saturday: { date: "Sat, Jan 17, 2026", names: ["Bridgette","Stefanie","Missie","Nate","Kelsey","Paige"] },
-        sunday:   { date: "Sun, Jan 18, 2026", names: ["Bridgette","Stefanie","Mahala","Kathy","Emily"] }
-      },
-      { label: "Week 8",
-        saturday: { date: "Sat, Jan 24, 2026", names: ["Bridgette","Stefanie","Missie","Kathy","Hannah","Leslie"] },
-        sunday:   { date: "Sun, Jan 25, 2026", names: ["Bridgette","Stefanie","Mahala","Missie","Becca"] }
-      },
-      { label: "Week 9",
-        saturday: { date: "Sat, Jan 31, 2026", names: ["Bridgette","Stefanie","Missie","Holli","Kay","Emily"] },
-        sunday:   { date: "Sun, Feb 1, 2026", names: ["Bridgette","Stefanie","Mahala","Kay","Becca"] }
-      },
-      { label: "Week 10",
-        saturday: { date: "Sat, Feb 7, 2026", names: ["Bridgette","Stefanie","Missie","Nate","Kelsey","Abby"] },
-        sunday:   { date: "Sun, Feb 8, 2026", names: ["Bridgette","Stefanie","Mahala","Nate","Kelsey"] }
-      },
-      { label: "Week 11",
-        saturday: { date: "Sat, Feb 14, 2026", names: ["Bridgette","Stefanie","Missie","Rebakah","Abby","Leslie"] },
-        sunday:   { date: "Sun, Feb 15, 2026", names: ["Bridgette","Stefanie","Mahala","Missie","Paige"] }
-      },
-      { label: "Week 12",
-        saturday: { date: "Sat, Feb 21, 2026", names: ["Bridgette","Stefanie","Missie","Nate","Kelsey","Emily"] },
-        sunday:   { date: "Sun, Feb 22, 2026", names: ["Bridgette","Stefanie","Mahala","Abby","Leslie"] }
-      }
-    ];
+<main>
+  <div id="weekContainer" class="week-grid"></div>
+</main>
 
-    const colorMap = {
-      "Bridgette": "black",
-      "Stefanie": "dimgray",
-      "Missie": "purple",
-      "Mahala": "teal",
-      "Nate": "darkorange",
-      "Kelsey": "darkorange",
-      "Becca": "darkgreen",
-      "Abby": "forestgreen",
-      "Holli": "royalblue",
-      "Paige": "slateblue",
-      "Kathy": "darkred",
-      "Hannah": "olive",
-      "Kay": "chocolate",
-      "Julia": "mediumvioletred",
-      "Rebakah": "red",
-      "Emily": "darkcyan",
-      "Leslie": "indigo"
-    };
+<script>
+const weekends = [
+  {label:"Week 1",
+   saturday:{date:"Dec 6", names:["Bridgette","Stefanie","Missie","Becca","Abby","Kaitlin"]},
+   sunday:{date:"Dec 7", names:["Bridgette","Stefanie","Holli","Paige","Julia"]}
+  },
+  {label:"Week 2",
+   saturday:{date:"Dec 13", names:["Bridgette","Stefanie","Missie","Holli","Paige","Kaitlin"]},
+   sunday:{date:"Dec 14", names:["Bridgette","Stefanie","Missie","Kathy","Julia"]}
+  },
+  {label:"Week 3",
+   saturday:{date:"Dec 20", names:["Bridgette","Stefanie","Missie","Kathy","Hannah","Becca"]},
+   sunday:{date:"Dec 21", names:["Bridgette","Stefanie","Holli","Paige","Kay"]}
+  },
+  {label:"Week 4",
+   saturday:{date:"Dec 27", names:["Bridgette","Stefanie","Missie","Kay","Julia","Kaitlin"]},
+   sunday:{date:"Dec 28", names:["Bridgette","Stefanie","Julia","Rebakah","Abby"]}
+  },
+  {label:"Week 5",
+   saturday:{date:"Jan 3", names:["Bridgette","Stefanie","Missie","Julia","Rebakah","Becca"]},
+   sunday:{date:"Jan 4", names:["Bridgette","Stefanie","Missie","Nate","Kelsey"]}
+  },
+  {label:"Week 6",
+   saturday:{date:"Jan 10", names:["Bridgette","Stefanie","Missie","Abby","Kay","Kaitlin"]},
+   sunday:{date:"Jan 11", names:["Bridgette","Stefanie","Kay","Becca","Hannah"]}
+  },
+  {label:"Week 7",
+   saturday:{date:"Jan 17", names:["Bridgette","Stefanie","Missie","Nate","Kelsey","Paige"]},
+   sunday:{date:"Jan 18", names:["Bridgette","Stefanie","Kathy","Hannah","Julia"]}
+  },
+  {label:"Week 8",
+   saturday:{date:"Jan 24", names:["Bridgette","Stefanie","Missie","Becca","Abby","Kaitlin"]},
+   sunday:{date:"Jan 25", names:["Bridgette","Stefanie","Missie","Julia","Rebakah"]}
+  },
+  {label:"Week 9",
+   saturday:{date:"Jan 31", names:["Bridgette","Stefanie","Missie","Holli","Kay","Paige"]},
+   sunday:{date:"Feb 1", names:["Bridgette","Stefanie","Kay","Becca","Abby"]}
+  },
+  {label:"Week 10",
+   saturday:{date:"Feb 7", names:["Bridgette","Stefanie","Missie","Nate","Kelsey","Hannah"]},
+   sunday:{date:"Feb 8", names:["Bridgette","Stefanie","Nate","Kelsey","Rebakah"]}
+  },
+  {label:"Week 11",
+   saturday:{date:"Feb 14", names:["Bridgette","Stefanie","Missie","Rebakah","Abby","Kaitlin"]},
+   sunday:{date:"Feb 15", names:["Bridgette","Stefanie","Missie","Holli","Paige"]}
+  },
+  {label:"Week 12",
+   saturday:{date:"Feb 21", names:["Bridgette","Stefanie","Missie","Nate","Kelsey","Kaitlin"]},
+   sunday:{date:"Feb 22", names:["Bridgette","Stefanie","Kay","Kathy","Paige"]}
+  }
+];
 
-    const weekContainer = document.getElementById("weekContainer");
-    const employeeFilter = document.getElementById("employeeFilter");
+const colorMap = {
+  Bridgette:"black",
+  Stefanie:"dimgray",
+  Missie:"purple",
+  Nate:"darkorange",
+  Kelsey:"darkorange",
+  Becca:"darkgreen",
+  Abby:"forestgreen",
+  Holli:"royalblue",
+  Paige:"slateblue",
+  Kathy:"darkred",
+  Hannah:"olive",
+  Kay:"chocolate",
+  Julia:"mediumvioletred",
+  Rebakah:"red",
+  Kaitlin:"darkcyan"
+};
 
-    const allNames = new Set();
-    weekends.forEach(w => {
-      w.saturday.names.forEach(n => allNames.add(n));
-      w.sunday.names.forEach(n => allNames.add(n));
-    });
+const container = document.getElementById("weekContainer");
+const filter = document.getElementById("employeeFilter");
 
-    Array.from(allNames).sort().forEach(name => {
-      const opt = document.createElement("option");
-      opt.value = name;
-      opt.textContent = name;
-      employeeFilter.appendChild(opt);
-    });
+const namesSet = new Set();
+weekends.forEach(w=>{
+  w.saturday.names.forEach(n=>namesSet.add(n));
+  w.sunday.names.forEach(n=>namesSet.add(n));
+});
 
-    function renderWeekends(filterName = "__all") {
-      weekContainer.innerHTML = "";
-      weekends.forEach(w => {
-        const satHas = (filterName === "__all") ? true : w.saturday.names.includes(filterName);
-        const sunHas = (filterName === "__all") ? true : w.sunday.names.includes(filterName);
-        if (filterName !== "__all" && !satHas && !sunHas) return;
+Array.from(namesSet).sort().forEach(n=>{
+  const o=document.createElement("option");
+  o.value=n;
+  o.textContent=n;
+  filter.appendChild(o);
+});
 
-        const card = document.createElement("div");
-        card.className = "week-card";
+function render(selected="__all"){
+  container.innerHTML="";
+  weekends.forEach(w=>{
+    const hasSat = selected==="__all" || w.saturday.names.includes(selected);
+    const hasSun = selected==="__all" || w.sunday.names.includes(selected);
+    if(selected!=="__all" && !hasSat && !hasSun) return;
 
-        const title = document.createElement("div");
-        title.className = "week-title";
-        title.textContent = `${w.label}`;
-        card.appendChild(title);
+    const card=document.createElement("div");
+    card.className="week-card";
+    card.innerHTML=`<div class="week-title">${w.label}</div>`;
 
-        if (filterName === "__all" || satHas) {
-          const sat = document.createElement("div");
-          sat.className = "day-block";
-          sat.innerHTML = `
-            <div class="day-head">
-              <span class="day-name">Saturday</span>
-              <span class="day-date">${w.saturday.date}</span>
-            </div>
-          `;
-          const namesWrap = document.createElement("div");
-          namesWrap.className = "names";
-          w.saturday.names.forEach(n => {
-            if (filterName === "__all" || n === filterName) {
-              const pill = document.createElement("span");
-              pill.className = "name-pill";
-              pill.textContent = n;
-              pill.style.color = colorMap[n] || "black";
-              namesWrap.appendChild(pill);
-            }
-          });
-          sat.appendChild(namesWrap);
-          card.appendChild(sat);
+    if(hasSat){
+      const sat=document.createElement("div");
+      sat.className="day-block";
+      sat.innerHTML=`<div class="day-head"><span>Saturday</span><span>${w.saturday.date}</span></div>`;
+      const wrap=document.createElement("div");
+      wrap.className="names";
+      w.saturday.names.forEach(n=>{
+        if(selected==="__all"||n===selected){
+          const p=document.createElement("span");
+          p.className="name-pill";
+          p.textContent=n;
+          p.style.color=colorMap[n];
+          wrap.appendChild(p);
         }
-
-        if (filterName === "__all" || sunHas) {
-          const sun = document.createElement("div");
-          sun.className = "day-block";
-          sun.innerHTML = `
-            <div class="day-head">
-              <span class="day-name">Sunday</span>
-              <span class="day-date">${w.sunday.date}</span>
-            </div>
-          `;
-          const namesWrap = document.createElement("div");
-          namesWrap.className = "names";
-          w.sunday.names.forEach(n => {
-            if (filterName === "__all" || n === filterName) {
-              const pill = document.createElement("span");
-              pill.className = "name-pill";
-              pill.textContent = n;
-              pill.style.color = colorMap[n] || "black";
-              namesWrap.appendChild(pill);
-            }
-          });
-          sun.appendChild(namesWrap);
-          card.appendChild(sun);
-        }
-
-        weekContainer.appendChild(card);
       });
+      sat.appendChild(wrap);
+      card.appendChild(sat);
     }
 
-    employeeFilter.addEventListener("change", (e) => {
-      renderWeekends(e.target.value);
-    });
+    if(hasSun){
+      const sun=document.createElement("div");
+      sun.className="day-block";
+      sun.innerHTML=`<div class="day-head"><span>Sunday</span><span>${w.sunday.date}</span></div>`;
+      const wrap=document.createElement("div");
+      wrap.className="names";
+      w.sunday.names.forEach(n=>{
+        if(selected==="__all"||n===selected){
+          const p=document.createElement("span");
+          p.className="name-pill";
+          p.textContent=n;
+          p.style.color=colorMap[n];
+          wrap.appendChild(p);
+        }
+      });
+      sun.appendChild(wrap);
+      card.appendChild(sun);
+    }
 
-    renderWeekends();
-  </script>
+    container.appendChild(card);
+  });
+}
+
+filter.addEventListener("change", e=>render(e.target.value));
+render();
+</script>
+
 </body>
 </html>
