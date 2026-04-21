@@ -134,7 +134,6 @@
       line-height: 1.2;
       white-space: nowrap;
     }
-
     .calendar-wrapper {
       display: flex;
       flex-direction: column;
@@ -214,11 +213,11 @@
       </div>
       <div class="control-block">
         <label for="satCount">Saturday headcount</label>
-        <input type="number" id="satCount" min="2" max="10" value="5" />
+        <input type="number" id="satCount" min="3" max="10" value="5" />
       </div>
       <div class="control-block">
         <label for="sunCount">Sunday headcount</label>
-        <input type="number" id="sunCount" min="2" max="10" value="4" />
+        <input type="number" id="sunCount" min="3" max="10" value="4" />
       </div>
       <div class="control-block">
         <label for="employeeFilter">Filter by employee</label>
@@ -241,23 +240,24 @@
 
   <script>
     const baseWeeks = [
-      { saturdayNames: ["Bridgette","Missie","Nate","Kelsey","Becca","Kaitlin"], sundayNames: ["Bridgette","Kay","Holli","Abby","Julia"] },
-      { saturdayNames: ["Bridgette","Missie","Becca","Abby","Kaitlin","Paige"], sundayNames: ["Bridgette","Kay","Missie","Paige","Julia"] },
-      { saturdayNames: ["Bridgette","Missie","Holli","Paige","Kathy","Kaitlin"], sundayNames: ["Bridgette","Kay","Kathy","Hannah","Julia"] },
-      { saturdayNames: ["Bridgette","Missie","Nate","Kelsey","Hannah","Kaitlin"], sundayNames: ["Bridgette","Kay","Julia","Rebakah"] },
-      { saturdayNames: ["Bridgette","Missie","Kay","Julia","Kaitlin","Becca"], sundayNames: ["Bridgette","Kay","Missie","Nate","Kelsey"] },
-      { saturdayNames: ["Bridgette","Missie","Julia","Rebakah","Kaitlin","Abby"], sundayNames: ["Bridgette","Kay","Becca","Abby"] },
-      { saturdayNames: ["Bridgette","Missie","Nate","Kelsey","Paige","Kaitlin"], sundayNames: ["Bridgette","Kay","Kathy","Hannah"] },
-      { saturdayNames: ["Bridgette","Missie","Becca","Abby","Hannah","Kaitlin"], sundayNames: ["Bridgette","Kay","Missie","Julia","Rebakah"] },
-      { saturdayNames: ["Bridgette","Missie","Holli","Kay","Kaitlin","Paige"], sundayNames: ["Bridgette","Kay","Becca","Abby"] },
-      { saturdayNames: ["Bridgette","Missie","Kathy","Hannah","Julia","Kaitlin"], sundayNames: ["Bridgette","Kay","Nate","Kelsey","Rebakah"] },
-      { saturdayNames: ["Bridgette","Missie","Kay","Rebakah","Kaitlin","Abby"], sundayNames: ["Bridgette","Kay","Missie","Holli","Paige"] },
-      { saturdayNames: ["Bridgette","Missie","Julia","Rebakah","Abby","Kaitlin"], sundayNames: ["Bridgette","Kay","Paige","Kathy"] }
+      { saturdayNames: ["Bridgette","Missie","Julia","Nate","Kelsey","Becca","Kaitlin"], sundayNames: ["Bridgette","Kay","Julia","Holli","Abby","Paige"] },
+      { saturdayNames: ["Bridgette","Missie","Julia","Becca","Abby","Kaitlin","Paige"], sundayNames: ["Bridgette","Kay","Julia","Missie","Kathy","Rebakah"] },
+      { saturdayNames: ["Bridgette","Missie","Julia","Holli","Paige","Kathy","Kaitlin"], sundayNames: ["Bridgette","Kay","Julia","Hannah","Abby","Becca"] },
+      { saturdayNames: ["Bridgette","Missie","Julia","Nate","Kelsey","Hannah","Kaitlin"], sundayNames: ["Bridgette","Kay","Julia","Rebakah","Paige","Kathy"] },
+      { saturdayNames: ["Bridgette","Missie","Julia","Kay","Kaitlin","Becca","Abby"], sundayNames: ["Bridgette","Kay","Julia","Missie","Nate","Kelsey"] },
+      { saturdayNames: ["Bridgette","Missie","Julia","Rebakah","Kaitlin","Abby","Hannah"], sundayNames: ["Bridgette","Kay","Julia","Becca","Paige","Kathy"] },
+      { saturdayNames: ["Bridgette","Missie","Julia","Nate","Kelsey","Paige","Kaitlin"], sundayNames: ["Bridgette","Kay","Julia","Hannah","Abby","Rebakah"] },
+      { saturdayNames: ["Bridgette","Missie","Julia","Becca","Abby","Hannah","Kaitlin"], sundayNames: ["Bridgette","Kay","Julia","Missie","Paige","Kathy"] },
+      { saturdayNames: ["Bridgette","Missie","Julia","Holli","Kay","Kaitlin","Rebakah"], sundayNames: ["Bridgette","Kay","Julia","Becca","Abby","Hannah"] },
+      { saturdayNames: ["Bridgette","Missie","Julia","Kathy","Hannah","Kaitlin","Becca"], sundayNames: ["Bridgette","Kay","Julia","Nate","Kelsey","Paige"] },
+      { saturdayNames: ["Bridgette","Missie","Julia","Kay","Rebakah","Kaitlin","Abby"], sundayNames: ["Bridgette","Kay","Julia","Missie","Holli","Kathy"] },
+      { saturdayNames: ["Bridgette","Missie","Julia","Rebakah","Abby","Kaitlin","Paige"], sundayNames: ["Bridgette","Kay","Julia","Hannah","Becca","Abby"] }
     ];
 
     const colorMap = {
       "Bridgette": "black",
       "Missie": "purple",
+      "Julia": "mediumvioletred",
       "Nate": "darkorange",
       "Kelsey": "darkorange",
       "Becca": "darkgreen",
@@ -267,12 +267,11 @@
       "Kathy": "darkred",
       "Hannah": "olive",
       "Kay": "chocolate",
-      "Julia": "mediumvioletred",
       "Rebakah": "red",
       "Kaitlin": "darkcyan"
     };
 
-    const fairnessPriority = ["Becca","Abby","Hannah","Paige","Kathy","Kaitlin","Julia","Rebakah"];
+    const fairnessPriority = ["Becca","Abby","Hannah","Paige","Kathy","Kaitlin","Rebakah"];
     const protectedOccasional = ["Holli"];
 
     const defaultView = document.getElementById("defaultView");
@@ -320,7 +319,7 @@
     }
 
     function pickSaturday(names, requested, satCounts) {
-      const core = ["Bridgette","Missie"];
+      const core = ["Bridgette","Missie","Julia"];
       const selected = [];
       const hasPair = names.includes("Nate") && names.includes("Kelsey");
       const effectiveRequested = hasPair ? requested + 1 : requested;
@@ -355,7 +354,7 @@
       const hasPair = names.includes("Nate") && names.includes("Kelsey");
       const effectiveRequested = hasPair ? requested + 1 : requested;
 
-      const core = ["Bridgette","Kay"];
+      const core = ["Bridgette","Kay","Julia"];
       if (names.includes("Missie")) core.push("Missie");
 
       const selected = [];
